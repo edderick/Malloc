@@ -1,4 +1,6 @@
+#include<stdio.h>
+
 int main() {
-	printf("My Malloc Function");
+	printf("My Malloc Function\n");
 	return 0;
 }
