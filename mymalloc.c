@@ -1,3 +1,8 @@
+/*
+This program was written by:
+Edward Seabrook - ejfs1g10@ecs.soton.ac.uk
+Ben Clive bac2g10@ecs.soton.ac.uk
+*/
 #include "mymalloc.h"
 
 int myinit(int *array, int size){
