@@ -9,4 +9,3 @@ int myfree_mt(int *array, int * block);
 
 int mydispose(int *array);
 int mydispose_mt(int *array);
-
