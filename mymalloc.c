@@ -12,20 +12,19 @@ int myinit(int *array, int size){
 	else return 0;
 }
 
-static void init(int *start, int size) {
-	*start = 1; /* 1 for taken, 0 for free */
-	
-	int next = size + 3; /* 3 for overheads */
-	*(start + 1) = next;
-	*(start + next - 1) = size;
+static int getSize(int *size){
+	return (int) (*size & 0x7FFFFFFF);
 }
+	
 
 int * mymalloc(int *array, int size) {
 	/*We have an array, I wonder what it is...*/
-	/* Find a suitable piece of free space... */
-	int *start = array + 4; /* Use position 3 of array for testing */
-	init( start, size );
-	return start+2;
+
+	/* Find a suitable piece of free space here */
+
+	int *start = array + 3; /* Use position 3 of array for testing */
+	*start = (size | 0x80000000);
+	return start+1;
 }
 		
 
