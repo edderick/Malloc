@@ -13,10 +13,11 @@ int myinit(int *array, int size){
 }
 
 static void init(int *start, int size) {
-	*start = 0; /* 0 for taken */
-	int *next = start + size + 3; /* 3 for overheads */
-	int *last = next - 1;
-	*last = size;
+	*start = 1; /* 1 for taken, 0 for free */
+	
+	int next = size + 3; /* 3 for overheads */
+	*(start + 1) = next;
+	*(start + next - 1) = size;
 }
 
 int * mymalloc(int *array, int size) {
