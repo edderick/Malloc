@@ -1,2 +1,2 @@
 all: 
-	gcc mydriver.c mymalloc.c  
+	gcc -std=c99 -o output.o mydriver.c mymalloc.c  
