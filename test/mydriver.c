@@ -6,12 +6,28 @@ int main(){
 	int mysize = 128;
 
 	int result = myinit(myarray, mysize);
-	
-	int *mem = mymalloc(myarray, 23);
-	*mem = 5;
+
+	printf("Testing Init: ");
 	
 	for(int x = 0; x<10; x++){
 		printf("%d,", myarray[x]);
 	}
+
+	int *mem = mymalloc(myarray, 4);
+	*mem = 5;
 	
+	printf("\nTesting mymalloc: ");
+
+	for(int x = 0; x<10; x++){
+		printf("%d,", mem[x]);
+	}
+
+	printf("\nDumping array: ");
+
+	for(int x = 0; x<10; x++){
+		printf("%d,", myarray[x]);
+	}
+	
+	printf("\n");
+
 }
