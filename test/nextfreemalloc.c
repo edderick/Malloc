@@ -63,7 +63,7 @@ int * mymalloc(int *array, int size) {
 				array[next + size + 2] = array[next + 1];
 			}
 			
-			//The user is returned a refference to the data section
+			//The user is returned a reference to the data section
 			return &array[next + 1];
 		}
 		//See if we can coalesce two free blocks
