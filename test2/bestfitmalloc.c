@@ -3,7 +3,7 @@ This program was written by:
 Edward Seabrook - ejfs1g10@ecs.soton.ac.uk
 Ben Clive bac2g10@ecs.soton.ac.uk
 
-This test implements the next free algorithm
+This test implements the best fit algorithm using a linked list :(
 
 |_Pointer___|_Block 1___________________________________|_Block 2__________|
 |_Next free_|_Size/free_|_Next Free ptr_|_Prev Free ptr_|_Size/free_|_Data_|
@@ -25,6 +25,9 @@ TODO: Remove magic 1, 2 and 3 relating to offsets of ptrs
 #include "bestfitmalloc.h"
 #define MIN_ARRAY_SIZE 128
 #define OVERHEADS 3
+#define NEXT 1
+#define PREV 2
+
 
 int myinit(int *array, int size){
 
@@ -33,7 +36,7 @@ int myinit(int *array, int size){
 		//The first block starts in position 1
 		array[0] = 1;
 		//The first entry of block 1 is it's size
-		array[1] = size - OVERHEADS;
+		array[1] = size - 2;
 		//Only the first block exists so send it back to the start
 		array[2] = 1;
 		array[3] = 1;
@@ -66,7 +69,7 @@ int * mymalloc(int *array, int size) {
 			else{
 				array[0] = next + size + 1;
 				
-				array[next + size + 1] = blockSize - size;
+				array[next + size + 1] = blockSize - (size + 1);
 
 				if (array[next + 1] == next) array[next + size + 2] = next + size + 1;
 				else array[next + size + 2] = array[next + 1];
@@ -82,62 +85,74 @@ int * mymalloc(int *array, int size) {
 			//The user is returned a reference to the data section
 			return &array[next + 1];
 		}
-		else{ 
-			//See if we can coalesce two free blocks
-			while((blockSize < size) && (array[next + blockSize + 1] > 0)){
-				//Sum sizes
-				array[next] = array[next] + array[next + blockSize + 1];
-				//Move next pointer (Prev ptr stays the same)
-				array[next + 1] = array[next + blockSize + 1];
-				blockSize = array[next];
-			}
-			//Go try the next free block
-			 if (blockSize < size) next = array[next + 1];	
-		}
+	
 	}while (next != start);
 
 	//If that fails, consider some compacting! :/
 	//Oh mate - You can't compact :(
+
+	return 0;
 }
 		
 int myfree( int *array, int *pointer){
-        int reference = pointer - array -1;
 
-        int size = array[reference];
-        //Show it isn't alive
-        array[reference] = -array[reference];
-        //set up pointers
-        int next = array[0];
-	int start = array[0];
-        do {
-                int newFree = array[next + 1];
-                if(newFree > reference || newFree == 1){
-                        //Overtaken!
-                        array[reference+2] = next; //Past pointer
-                        array[reference+1] = newFree; //Next pointer
-			if(newFree == 1){
-				array[0] = 1;
-			}
-                }
-		next = array[next+1];
-        }while(array[next+1] < reference);
+	//pointer points to one place higher
+	int currentNode = pointer - array - 1;
 
-        //Should work!
+	//set size back to positive	
+	array[currentNode] = -array[currentNode];
 
-        //Search for continuous free space...
-        next = array[0];
-	int blockSize;
-	int nextPtr;
-	int prevPtr;
-	do{
-		blockSize = array[next];
-		nextPtr = array[next+1];
-		prevPtr = array[next+2];
-                if(nextPtr == (next + blockSize)){
-                        //Continuous!
-                        nextPtr = array[nextPtr+1];
-                }
-                next = nextPtr;
-        }while(next != start );
+	//coalescesing should happen now
+	int size = array[currentNode];
+	while(array[size + currentNode + 1] > 0){
+		if(array[0] == size + currentNode + 1) array[0] = currentNode;
+	//Alright boys, lets boost the size
+		size = size + array[size + currentNode + 1];
+		//bridge pointers 
+		//prev -> next
+		array[array[size + 2]] = array[array[size + 1]];
+		//next -> prev
+		array[array[size + 1]] = array[array[size + 2]];
+		
+	}
+	array[currentNode] = size;
+
+	//start at 0 follow the free blocks to the first one that is larger
+	int nextNode = array[0];
+	int previousNode = 0;
+
+	while ((array[nextNode] <= array[currentNode]) && (array[nextNode + 1] != nextNode)){
+		previousNode = nextNode;
+		nextNode = array[nextNode + 1];
+	}
+
+	//insert it at this point
+	//prev -> curr and curr -> prev 
+	if (previousNode == 0){ 
+		array[0] = currentNode;
+		array[currentNode + PREV] = currentNode;
+	}
+	else{
+		array[previousNode + NEXT] = currentNode;
+		array[currentNode + PREV] = previousNode;
+	}
+	//next -> curr and curr -> next
+	if((nextNode = array[nextNode + NEXT]) && (array[nextNode] < array[currentNode])){
+		array[currentNode + NEXT] = currentNode;
+	}
+	else{
+		array[nextNode + PREV] = currentNode;
+		array[currentNode + NEXT] = nextNode;
+	}
+
+
+
+	
+
+
+
+	
+
+
 }
 

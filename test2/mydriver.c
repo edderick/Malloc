@@ -7,57 +7,108 @@ int main(){
 
 	int result = myinit(myarray, mysize);
 
-	printf("Testing Init: ");
-	
-	for(int x = 0; x<10; x++){
+	printf("Initializing... \n");
+	printf("Mem Dump: \n");
+	for(int x = 0; x<30; x++){
 		printf("%d,", myarray[x]);
 	}
 
-	int *mem = mymalloc(myarray, 4);
-	*mem = 5;
+	int i = 0;
+	int *mems[17];
 	
-	printf("\nTesting mymalloc: ");
+	while (i < 17){
+		i++;
+		mems[i] = mymalloc(myarray, 6);
 
-	for(int x = 0; x<1; x++){
-		printf("%d,", mem[x]);
+		printf("\nMem Dump: \n");
+		for(int x = 0; x<128; x++){
+			printf("%d,", myarray[x]);
+		}
+		
 	}
 
-	printf("\nDumping array: ");
+	printf("\n \n reverse \n \n");
 
-	for(int x = 0; x<10; x++){
+	i=5;
+	while (i > 1){
+		i--;
+		myfree(myarray, mems[i]);
+
+		printf("\nMem Dump: \n");
+		for(int x = 0; x<128; x++){
+			printf("%d,", myarray[x]);
+		}
+		
+	}
+
+	int *mem = mymalloc(myarray, 19);
+
+	for (i =0; i < 19; i++) mem[i] = 0;
+
+	printf("\nMem Dump: \n");
+	for(int x = 0; x<128; x++){
+		printf("%d,", myarray[x]);
+	}
+
+
+
+/*	printf("\nMallocating 4 blocks, setting [0] = 5... \n");
+	int *mem1 = mymalloc(myarray, 4);
+	*mem1 = 5;
+	
+	printf("Dump of allocated mem1: ");
+	printf("%d", mem1[0]);
+
+
+	printf("\nMem Dump: \n");
+	for(int x = 0; x<30; x++){
 		printf("%d,", myarray[x]);
 	}
 	
-	printf("\nTesting free...");
 
-	myfree(myarray, mem);
+	printf("\nFreeing those 4 blocks...");
+	myfree(myarray, mem1);
 
-	printf("\nDumping array...");
-	
-	for(int x = 0; x<10; x++){
+	printf("\nMem Dump: \n");
+	for(int x = 0; x<30; x++){
 		printf("%d,", myarray[x]);
 	}
 	
-	printf("\n");
-
+	printf("\nAllocating annother 4 blocks, setting [0] = 7... \n");
 	int *mem2 = mymalloc(myarray, 4);
-	*mem2 = 5;
-	
-	printf("\nTesting mymalloc: ");
+	*mem2 = 7;
 
-	for(int x = 0; x<1; x++){
-		printf("%d,", mem2[x]);
+	printf("Dump of allocated mem2: ");
+	printf("%d", mem2[0]);
+
+	printf("\nMem Dump: \n");
+	for(int x = 0; x<30; x++){
+		printf("%d,", myarray[x]);
+	}
+	
+	printf("\nAllocating annother 6 blocks, setting [0] = 8... \n");
+	int *mem3 = mymalloc(myarray, 6);
+	*mem3 = 8;
+
+	printf("Dump of allocated mem3: ");
+	printf("%d", mem3[0]);
+
+	printf("\nMem Dump: \n");
+	for(int x = 0; x<30; x++){
+		printf("%d,", myarray[x]);
 	}
 
-	printf("\nDumping array: ");
+	printf("\nFreeing those 6 blocks...");
+	myfree(myarray, mem3);
 
-	for(int x = 0; x<20; x++){
+	printf("\nMem Dump: \n");
+	for(int x = 0; x<30; x++){
 		printf("%d,", myarray[x]);
 	}
 	
 	printf("\n");
 
-
+*/
 
 
 }
