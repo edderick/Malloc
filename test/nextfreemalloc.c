@@ -109,7 +109,8 @@ int myfree( int *array, int *pointer){
         //set up pointers
 	int start = 1;
         int blockSize = array[start];
-	bool applyNext = false;
+	int applyNext = 0;
+	int prevFree;
         do {
 		blockSize = array[start];
 		if(blockSize < 0){
@@ -120,17 +121,17 @@ int myfree( int *array, int *pointer){
 			if(start == reference){
 				//Apply the previous from stored value;
 				array[reference+2] = prevFree;
-				applyNext = true;	
+				applyNext = 1;	
 			}
 			if(applyNext){
 				array[reference+1] = start;
-				applyNext = false;
+				applyNext = 0;
 			}
 			start += blockSize;
 			prevFree = start;
 		}
 			
-        }while(array[next+1] < reference);
+        }while(start < 128);
 
         //Should work!
 
