@@ -107,24 +107,34 @@ int myfree( int *array, int *pointer){
         //Show it isn't alive
         array[reference] = -array[reference];
         //set up pointers
-        int next = array[0];
-	int start = array[0];
+	int start = 1;
+        int blockSize = array[start];
+	bool applyNext = false;
         do {
-                int newFree = array[next + 1];
-                if(newFree > reference || newFree == 1){
-                        //Overtaken!
-                        array[reference+2] = next; //Past pointer
-                        array[reference+1] = newFree; //Next pointer
-			if(newFree == 1){
-				array[0] = 1;
+		blockSize = array[start];
+		if(blockSize < 0){
+			//We have found an allocated block
+			start += -blockSize;
+		} else {
+			//We have found a free block
+			if(start == reference){
+				//Apply the previous from stored value;
+				array[reference+2] = prevFree;
+				applyNext = true;	
 			}
-                }
-		next = array[next+1];
+			if(applyNext){
+				array[reference+1] = start;
+				applyNext = false;
+			}
+			start += blockSize;
+			prevFree = start;
+		}
+			
         }while(array[next+1] < reference);
 
         //Should work!
 
-        //Search for continuous free space...
+/*        //Search for continuous free space...
         next = array[0];
 	int blockSize;
 	int nextPtr;
@@ -139,5 +149,6 @@ int myfree( int *array, int *pointer){
                 }
                 next = nextPtr;
         }while(next != start );
+*/
 }
 
