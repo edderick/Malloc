@@ -22,7 +22,7 @@ Note: Size does not include overheads
 TODO: Remove magic 1, 2 and 3 relating to offsets of ptrs
 
 */
-#include "nextfreemalloc.h"
+#include "bestfitmalloc.h"
 #define MIN_ARRAY_SIZE 128
 #define OVERHEADS 3
 
@@ -107,35 +107,24 @@ int myfree( int *array, int *pointer){
         //Show it isn't alive
         array[reference] = -array[reference];
         //set up pointers
-	int start = 1;
-        int blockSize = array[start];
-	int applyNext = 0;
-	int prevFree;
+        int next = array[0];
+	int start = array[0];
         do {
-		blockSize = array[start];
-		if(blockSize < 0){
-			//We have found an allocated block
-			start += -blockSize;
-		} else {
-			//We have found a free block
-			if(start == reference){
-				//Apply the previous from stored value;
-				array[reference+2] = prevFree;
-				applyNext = 1;	
+                int newFree = array[next + 1];
+                if(newFree > reference || newFree == 1){
+                        //Overtaken!
+                        array[reference+2] = next; //Past pointer
+                        array[reference+1] = newFree; //Next pointer
+			if(newFree == 1){
+				array[0] = 1;
 			}
-			if(applyNext){
-				array[reference+1] = start;
-				applyNext = 0;
-			}
-			start += blockSize;
-			prevFree = start;
-		}
-			
-        }while(start < 128);
+                }
+		next = array[next+1];
+        }while(array[next+1] < reference);
 
-        //Should work! -- Does not.
+        //Should work!
 
-/*        //Search for continuous free space...
+        //Search for continuous free space...
         next = array[0];
 	int blockSize;
 	int nextPtr;
@@ -150,6 +139,5 @@ int myfree( int *array, int *pointer){
                 }
                 next = nextPtr;
         }while(next != start );
-*/
 }
 
