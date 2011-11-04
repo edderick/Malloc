@@ -39,7 +39,8 @@ int myinit(int *array, int size){
 	else return 0;
 }
 	
-
+//Compaction doesn't work due to pointers!!!!!!!!
+//
 int * mymalloc(int *array, int size) {
 
 	int next = array[0];
