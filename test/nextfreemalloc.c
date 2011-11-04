@@ -5,8 +5,8 @@ Ben Clive bac2g10@ecs.soton.ac.uk
 
 This test implements the next free algorithm
 
-|_Pointer___|_Block 1___________________|_Block 2__________|
-|_Next free_|_Size/free_|_Next Free ptr_|_Size/free_|_Data_|
+|_Pointer___|_Block 1___________________________________|_Block 2__________|
+|_Next free_|_Size/free_|_Next Free ptr_|_Prev Free ptr_|_Size/free_|_Data_|
 
 + Array[0] contains pointer to the next free location after 
   the previously allocated location
@@ -22,7 +22,7 @@ Note: Size does not include overheads
 */
 #include "nextfreemalloc.h"
 #define MIN_ARRAY_SIZE 128
-#define OVERHEADS 2
+#define OVERHEADS 3
 
 int myinit(int *array, int size){
 
@@ -34,6 +34,7 @@ int myinit(int *array, int size){
 		array[1] = size - OVERHEADS;
 		//Only the first block exists so send it back to the start
 		array[2] = 1;
+		array[3] = 1;
 		return 1;
 	}
 	else return 0;
@@ -62,17 +63,29 @@ int * mymalloc(int *array, int size) {
 				array[0] = next + size + 1;
 				array[next + size + 1] = blockSize - size;
 				array[next + size + 2] = array[next + 1];
+				array[next + size + 3] = array[next + 2];
 			}
-			
+			//Set previous blocks pointer to next block
+			array[array[next + 2]] = array[0];
+
 			//The user is returned a reference to the data section
 			return &array[next + 1];
 		}
-		//See if we can coalesce two free blocks
-		
-		//Go try the next free block
-		else next = array[next + 1];	
+		else{ 
+			//See if we can coalesce two free blocks
+			while((blockSize < size) && (array[next + blockSize + 1] > 0)){
+				//Sum sizes
+				array[next] = array[next] + array[next + blockSize + 1];
+				//Move next pointer (Prev ptr stays the same)
+				array[next + 1] = array[next + blockSize + 1];
+				blockSize = array[next];
+			}
+			//Go try the next free block
+			 if (blockSize < size) next = array[next + 1];	
+		}
 	}while (next != start);
 
 	//If that fails, consider some compacting! :/
+	//Oh mate - You can't compact :(
 }
 		
