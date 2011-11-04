@@ -19,6 +19,8 @@ This test implements the next free algorithm
 
 Note: Size does not include overheads
 
+TODO: Remove magic 1, 2 and 3 relating to offsets of ptrs
+
 */
 #include "nextfreemalloc.h"
 #define MIN_ARRAY_SIZE 128
@@ -57,16 +59,25 @@ int * mymalloc(int *array, int size) {
 			//If it fits perfectly just give it the block
 			if (blockSize <= size + OVERHEADS){
 				array[0] = array[next + 1];
+				//Set previous blocks pointer to next block
+				if(array[next + 2] != next) array[array[next + 2]] = array[0];
 			}
 			//If its a bit bigger split the block in two
 			else{
 				array[0] = next + size + 1;
+				
 				array[next + size + 1] = blockSize - size;
-				array[next + size + 2] = array[next + 1];
-				array[next + size + 3] = array[next + 2];
+
+				if (array[next + 1] == next) array[next + size + 2] = next + size + 1;
+				else array[next + size + 2] = array[next + 1];
+				
+				if (array[next + 2] == next) array[next + size + 3] = next + size + 1;
+				else array[next + size + 3] = array[next + 2];
+
+				//Set previous blocks pointer to next block
+				if(array[next + 2] != next) array[array[next + size + 3] + 2] = array[0];
+	
 			}
-			//Set previous blocks pointer to next block
-			array[array[next + 2]] = array[0];
 
 			//The user is returned a reference to the data section
 			return &array[next + 1];

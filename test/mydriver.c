@@ -18,7 +18,7 @@ int main(){
 	
 	printf("\nTesting mymalloc: ");
 
-	for(int x = 0; x<10; x++){
+	for(int x = 0; x<1; x++){
 		printf("%d,", mem[x]);
 	}
 
@@ -29,5 +29,25 @@ int main(){
 	}
 	
 	printf("\n");
+
+	int *mem2 = mymalloc(myarray, 4);
+	*mem2 = 5;
+	
+	printf("\nTesting mymalloc: ");
+
+	for(int x = 0; x<1; x++){
+		printf("%d,", mem2[x]);
+	}
+
+	printf("\nDumping array: ");
+
+	for(int x = 0; x<20; x++){
+		printf("%d,", myarray[x]);
+	}
+	
+	printf("\n");
+
+
+
 
 }
