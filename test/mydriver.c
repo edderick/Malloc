@@ -28,6 +28,16 @@ int main(){
 		printf("%d,", myarray[x]);
 	}
 	
+	printf("\nTesting free...");
+
+	myfree(myarray, mem);
+
+	printf("\nDumping array...");
+	
+	for(int x = 0; x<10; x++){
+		printf("%d,", myarray[x]);
+	}
+	
 	printf("\n");
 
 	int *mem2 = mymalloc(myarray, 4);

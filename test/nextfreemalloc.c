@@ -100,3 +100,44 @@ int * mymalloc(int *array, int size) {
 	//Oh mate - You can't compact :(
 }
 		
+int myfree( int *array, int *pointer){
+        int reference = pointer - array -1;
+
+        int size = array[reference];
+        //Show it isn't alive
+        array[reference] = -array[reference];
+        //set up pointers
+        int next = array[0];
+	int start = array[0];
+        do {
+                int newFree = array[next + 1];
+                if(newFree > reference || newFree == 1){
+                        //Overtaken!
+                        array[reference+2] = next; //Past pointer
+                        array[reference+1] = newFree; //Next pointer
+			if(newFree == 1){
+				array[0] = 1;
+			}
+                }
+		next = array[next+1];
+        }while(array[next+1] < reference);
+
+        //Should work!
+
+        //Search for continuous free space...
+        next = array[0];
+	int blockSize;
+	int nextPtr;
+	int prevPtr;
+	do{
+		blockSize = array[next];
+		nextPtr = array[next+1];
+		prevPtr = array[next+2];
+                if(nextPtr == (next + blockSize)){
+                        //Continuous!
+                        nextPtr = array[nextPtr+1];
+                }
+                next = nextPtr;
+        }while(next != start );
+}
+
