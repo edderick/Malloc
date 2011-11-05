@@ -85,13 +85,13 @@ int * mymalloc(int *array, int size) {
 			//The user is returned a reference to the data section
 			return &array[next + 1];
 		}
-	
+	next = array[next + 1];	
 	}while (next != start);
 
 	//If that fails, consider some compacting! :/
 	//Oh mate - You can't compact :(
 
-	return 0;
+	return (int *) 0;
 }
 		
 int myfree( int *array, int *pointer){
@@ -105,15 +105,28 @@ int myfree( int *array, int *pointer){
 	//coalescesing should happen now
 	int size = array[currentNode];
 	while(array[size + currentNode + 1] > 0){
-		if(array[0] == size + currentNode + 1) array[0] = currentNode;
-	//Alright boys, lets boost the size
-		size = size + array[size + currentNode + 1];
+		
+		int coalescePtr = currentNode + size + 1;
+		int previousPtr = currentNode + size + PREV + 1;
+		int nextPtr = currentNode + size + NEXT + 1;
+
+		if(array[0] == coalescePtr) array[0] = array[nextPtr];
 		//bridge pointers 
 		//prev -> next
-		array[array[size + 2]] = array[array[size + 1]];
+		if (array[nextPtr] ==  coalescePtr) {
+			array[array[previousPtr] + NEXT] = array[previousPtr];
+		}else{
+			array[array[previousPtr] + NEXT] = array[nextPtr];
+		}
 		//next -> prev
-		array[array[size + 1]] = array[array[size + 2]];
-		
+		if (array[previousPtr] ==  coalescePtr) {
+			array[0] = array[nextPtr];
+			array[array[nextPtr] + PREV] = array[nextPtr];
+		}else{
+			array[array[nextPtr] + PREV] = array[previousPtr];
+		}
+		//Alright boys, lets boost the size
+		size = size + array[size + currentNode + 1] + 1;	
 	}
 	array[currentNode] = size;
 
@@ -121,9 +134,9 @@ int myfree( int *array, int *pointer){
 	int nextNode = array[0];
 	int previousNode = 0;
 
-	while ((array[nextNode] <= array[currentNode]) && (array[nextNode + 1] != nextNode)){
+	while ((array[nextNode] <= array[currentNode]) && (previousNode != nextNode)){
 		previousNode = nextNode;
-		nextNode = array[nextNode + 1];
+		nextNode = array[nextNode + NEXT];
 	}
 
 	//insert it at this point
@@ -137,14 +150,12 @@ int myfree( int *array, int *pointer){
 		array[currentNode + PREV] = previousNode;
 	}
 	//next -> curr and curr -> next
-	if((nextNode = array[nextNode + NEXT]) && (array[nextNode] < array[currentNode])){
+	if (previousNode == nextNode){
 		array[currentNode + NEXT] = currentNode;
-	}
-	else{
+	}else{
 		array[nextNode + PREV] = currentNode;
 		array[currentNode + NEXT] = nextNode;
 	}
-
 
 
 	

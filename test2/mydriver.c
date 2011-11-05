@@ -41,7 +41,9 @@ int main(){
 		
 	}
 
-	int *mem = mymalloc(myarray, 19);
+	int *mem = mymalloc(myarray, 12);
+
+	printf("%d", mem - myarray); 
 
 	for (i =0; i < 19; i++) mem[i] = 0;
 
