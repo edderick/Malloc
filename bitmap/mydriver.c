@@ -21,7 +21,13 @@ int main(){
 		printf("\n");
 		return 0;
 	}
-	*mem = 5;	
+	*mem = 30;	
+	int *mem2 = mymalloc(myarray, 6);
+	*mem2 = 88;
+	int *mem3 = mymalloc(myarray, 35);
+	for(int i=0; i<35; i++){
+		*(mem3+i) = i;
+	}
 	for(int i=0; i<mysize; i++){
 		printf("%d,", myarray[i]);
 	}

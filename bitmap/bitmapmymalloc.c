@@ -10,16 +10,17 @@ TODO: Remove magic 1, 2 and 3 relating to offsets of ptrs
 
 */
 #include "bitmapmymalloc.h"
+#include <stdio.h> //For testing
 #define MIN_ARRAY_SIZE 128
 #define OVERHEADS 3
 #define NEXT 1
 #define PREV 2
 
-static int rotateRight(int x, int shift){
-	return (x >> shift) | (x << (sizeof(x)*8 - shift));
+static int rotateRight( int x, int shift){
+	return ((unsigned int)x >> shift) | ((unsigned int)x << (32 - shift));
 }
-static int rotateLeft(int x, int shift){
-	return (x << shift) | (x >> (sizeof(x)*8 - shift));
+static int rotateLeft( int x, int shift){
+	return ((unsigned int)x << shift) | ((unsigned int)x >> (32 - shift));
 }
 int myinit(int *array, int size){
 
@@ -29,12 +30,12 @@ int myinit(int *array, int size){
 		//Number of blocks needed to store array...
 		int bitmap = size / 32;
 		array[0] = bitmap;
-		unsigned int number = array[1];
-		for(int i =0; i<32; i++){
-			if(i == 32 - (bitmap +1)){
+		int number = array[1];
+		for(int i=0; i<32; i++){
+			if(i <= bitmap){
 				number |= 0x1;
-				bitmap--;
 			}
+			printf("%d", number&0x1);
 			number = rotateRight(number, 1);	
 		}
 		array[1] = number;
@@ -49,47 +50,62 @@ int myinit(int *array, int size){
 int * mymalloc(int *array, int size) {
 
 	//go through bitmap to find the biggest set of zeros closest to it.
+	if(size == 0 || size < 0){
+		return 0;
+	}
 	int block=0;
 	int blockNumber=0;
 	int zerocounter=0;
-	int currentBestSize=12000;
-	int ourBlock=0;
-	int counter=1;
+	int currentBestSize=999999;
+	int ourBlock=-1;
+	int counter=0;
 	while(counter < array[0]){
-		int bits = array[counter];
-		for(int i=1; i<=32; i++){
-			if(!bits & 0x1){
+		int bits = array[counter+1];
+		printf("\n++%d++\n", counter+1);
+		for(int i=0; i<32; i++){
+			printf("%d", bits&0x1);
+			if(!(bits & 0x1)){
 				//Found a 0
-				array[(counter*i)] = !bits&0x1;
-				if(zerocounter == 0) block = (counter*i) ;
+				if(zerocounter == 0) { 
+					//record first 0.
+					printf("Found a zero at block %d\n", (counter*32)+i);
+					block = (counter*32)+i ;
+				}
 				zerocounter++;
-			} else {
-				//Found a 1
+			}
+			 if(bits & 0x1 || (counter==array[0]-1 && i==31)){
+				//Found a 1 or end of array.
 				if(zerocounter >= size && zerocounter < currentBestSize){
 					currentBestSize = zerocounter;
 					ourBlock = block;
 				}
-				zerocounter = 0;
+				if(!zerocounter == 0){
+					printf("\nFinished a 0 stream, found %d\n", zerocounter);
+					zerocounter = 0;
+				}
 			}
-			bits = rotateLeft(bits, 1);
+			bits = rotateRight(bits, 1);
 		}
 		counter++;
 	}
-	if(ourBlock == 0){
+	if(ourBlock == -1){
 		return 0;
 	}
 	//Finished looking through bitmap;
 	//We have our pointer!
-	counter = ourBlock / 32;
+	printf("Our Block: %d\n", ourBlock);
+	counter = ourBlock / 32 + 1;
 	int startBit = ourBlock % 32;
+	printf("Counter =%d, startBit=%d\n", counter, startBit); 
 	int number = array[counter];
-	for(int i=0; i<32; i++){
-		rotateRight(number, 1);
-		if(i == startBit){
+	for(int i=1; i<=32; i++){
+		number = rotateRight(number, 1);
+		if(i < startBit + size && i >= startBit){
 			number |= 0x1;
-			startBit++;
+			printf("Edited %d in block %d\n", i, counter);
 		}	
 	}
+	array[counter] = number;
 	return array+ourBlock;
 }
 		
