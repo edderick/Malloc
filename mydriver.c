@@ -7,8 +7,10 @@ int main(){
 
 	int result = myinit(myarray, mysize);
 	
-	int *mem = mymalloc(myarray, 23);
+	int *mem = mymalloc(myarray, 3);
+	int *mem2 = mymalloc(myarray, 4);
 	*mem = 5;
+	*mem2 = 6;
 	
 	for(int x = 0; x<10; x++){
 		printf("%d,", myarray[x]);
