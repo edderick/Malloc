@@ -29,16 +29,17 @@ int myinit(int *array, int size){
 		//The first block starts in position 1
 		//Number of blocks needed to store array...
 		int bitmap = size / 32;
-		array[0] = bitmap;
-		int number = array[1];
+		array[1] = bitmap;
+		array[0] = size;
+		int number = array[2];
 		for(int i=0; i<32; i++){
-			if(i <= bitmap){
+			if(i <= bitmap+1){
 				number |= 0x1;
 			}
 			printf("%d", number&0x1);
 			number = rotateRight(number, 1);	
 		}
-		array[1] = number;
+		array[2] = number;
 		return 1;
 		
 	}
@@ -50,7 +51,7 @@ int myinit(int *array, int size){
 int * mymalloc(int *array, int size) {
 
 	//go through bitmap to find the biggest set of zeros closest to it.
-	if(size == 0 || size < 0){
+	if(size <= 0){
 		return 0;
 	}
 	int block=0;
@@ -59,9 +60,9 @@ int * mymalloc(int *array, int size) {
 	int currentBestSize=999999;
 	int ourBlock=-1;
 	int counter=0;
-	while(counter < array[0]){
-		int bits = array[counter+1];
-		printf("\n++%d++\n", counter+1);
+	while(counter < array[1]){
+		int bits = array[counter+2];
+		printf("\n++%d++\n", counter+2);
 		for(int i=0; i<32; i++){
 			printf("%d", bits&0x1);
 			if(!(bits & 0x1)){
@@ -73,9 +74,9 @@ int * mymalloc(int *array, int size) {
 				}
 				zerocounter++;
 			}
-			 if(bits & 0x1 || (counter==array[0]-1 && i==31)){
+			 if(bits & 0x1 || (counter==array[1]-1 && i==31)){
 				//Found a 1 or end of array.
-				if(zerocounter >= size && zerocounter < currentBestSize){
+				if(zerocounter >= size+1 && zerocounter < currentBestSize){
 					currentBestSize = zerocounter;
 					ourBlock = block;
 				}
@@ -94,70 +95,68 @@ int * mymalloc(int *array, int size) {
 	//Finished looking through bitmap;
 	//We have our pointer!
 	printf("Our Block: %d\n", ourBlock);
-	counter = ourBlock / 32 + 1;
+	array[ourBlock] = size+1;
+	counter = ourBlock / 32 + 2;
 	int startBit = ourBlock % 32;
 	printf("Counter =%d, startBit=%d\n", counter, startBit); 
-	int number = array[counter];
-	for(int i=1; i<=32; i++){
-		number = rotateRight(number, 1);
-		if(i < startBit + size && i >= startBit){
-			number |= 0x1;
-			printf("Edited %d in block %d\n", i, counter);
-		}	
+	int bitsToChange = size;
+	while(bitsToChange > 0){
+		int number = array[counter];
+
+		for(int i=1; i<=32; i++){
+			if(i < startBit + bitsToChange + 1 && i >= startBit){
+				number |= 0x1;
+	//			printf("Edited %d in block %d\n", i, counter);
+				bitsToChange--;
+				startBit++;
+			}	
+			number = rotateRight(number, 1);
+		}
+		array[counter] = number;
+		if(bitsToChange > 0){
+			counter++;
+			bitsToChange--;
+			startBit = 0;
+			
+		}
 	}
-	array[counter] = number;
-	return array+ourBlock;
+	return array+ourBlock+1;
 }
 		
 int myfree( int *array, int *pointer){
-
-	//pointer points to one place higher
-	int currentNode = pointer - array - 1;
-
-	//set size back to positive	
-	array[currentNode] = -array[currentNode];
-
-	//coalescesing should happen now
-	int size = array[currentNode];
-	while(array[size + currentNode + 1] > 0){
-		if(array[0] == size + currentNode + 1) array[0] = currentNode;
-	//Alright boys, lets boost the size
-		size = size + array[size + currentNode + 1];
-		//bridge pointers 
-		//prev -> next
-		array[array[size + 2]] = array[array[size + 1]];
-		//next -> prev
-		array[array[size + 1]] = array[array[size + 2]];
+	//free stuff
+	int counter = pointer - array;
+	if(counter > array[0]){
+		return 0;
+	}
+	//move back 1 from user block
+	counter -= 1;
+	printf("\nNumber of bits to free: %d\n", array[counter]);
+	int bitmapbit = counter % 32;
+	int bitsToChange = array[counter];
+	while(bitsToChange > 0){
+		int bitmapblock = counter / 32+2;
+		int bits = array[bitmapblock];
+		printf("\nblock: %d, bit: %d\n", bitmapblock, bitmapbit);
+		for(int i=0; i<32; i++){
+			bits = rotateRight(bits, 1);
+			if(i >= bitmapbit && i < bitmapbit + bitsToChange){
+				bits &= 0x0;
+				bitsToChange--;
+				bitmapbit++;
+			}
+			printf("%d",bits & 0x1);
+		}
+		array[bitmapblock] = bits;
+		if(bitsToChange > 0){
+			bitmapblock++;
+			bitmapbit = 0;
+		}
 		
 	}
-	array[currentNode] = size;
-
-	//start at 0 follow the free blocks to the first one that is larger
-	int nextNode = array[0];
-	int previousNode = 0;
-
-	while ((array[nextNode] <= array[currentNode]) && (array[nextNode + 1] != nextNode)){
-		previousNode = nextNode;
-		nextNode = array[nextNode + 1];
-	}
-
-	//insert it at this point
-	//prev -> curr and curr -> prev 
-	if (previousNode == 0){ 
-		array[0] = currentNode;
-		array[currentNode + PREV] = currentNode;
-	}
-	else{
-		array[previousNode + NEXT] = currentNode;
-		array[currentNode + PREV] = previousNode;
-	}
-	//next -> curr and curr -> next
-	if((nextNode = array[nextNode + NEXT]) && (array[nextNode] < array[currentNode])){
-		array[currentNode + NEXT] = currentNode;
-	}
-	else{
-		array[nextNode + PREV] = currentNode;
-		array[currentNode + NEXT] = nextNode;
+	int bits = array[2];
+	for(int i=0; i<32; i++){
+		printf("%d", bits&0x1);
 	}
 }
 

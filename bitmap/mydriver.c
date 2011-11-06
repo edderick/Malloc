@@ -22,6 +22,7 @@ int main(){
 		return 0;
 	}
 	*mem = 30;	
+	*(mem+3) = -30;
 	int *mem2 = mymalloc(myarray, 6);
 	*mem2 = 88;
 	int *mem3 = mymalloc(myarray, 35);
@@ -31,5 +32,7 @@ int main(){
 	for(int i=0; i<mysize; i++){
 		printf("%d,", myarray[i]);
 	}
+	mymalloc(myarray, 20);
+	myfree(myarray, mem);
 	printf("\n");
 }
