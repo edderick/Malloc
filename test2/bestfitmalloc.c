@@ -49,10 +49,12 @@ int myinit(int *array, int size){
 //
 int * mymalloc(int *array, int size) {
 
+
+	if (array[0] == 0) return (int *) 0;
+
 	int next = array[0];
 	int last = next;
 
-	if (array[0] == 0) return (int *) 0;
 
 	//as long as the next 
 	do{
@@ -62,7 +64,7 @@ int * mymalloc(int *array, int size) {
 			//Tell the world that it is not free anymore 
 			array[next] = -size;
 			//If it fits perfectly just give it the block
-			if (blockSize == size ){
+			if (blockSize <= size + 1){
 				//		if (array[next + 1] != next) array[0] = array[next + 1];
 				//		else array[0] = 0;
 				//		//Set previous blocks pointer to next block
@@ -74,7 +76,7 @@ int * mymalloc(int *array, int size) {
 				int previousPtr = next + PREV;
 				int nextPtr =  next +  NEXT;
 
-				if(nextPtr == previousPtr){
+				if(array[nextPtr] == array[previousPtr]){
 					array[0] = 0;
 				}
 				else{
@@ -188,6 +190,7 @@ int myfree( int *array, int *pointer){
 		}
 		//next -> curr and curr -> next
 		if (previousNode == nextNode){
+			array[currentNode + PREV] = currentNode;
 			array[currentNode + NEXT] = currentNode;
 		}else{
 			array[nextNode + PREV] = currentNode;
