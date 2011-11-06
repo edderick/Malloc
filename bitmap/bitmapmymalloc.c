@@ -97,14 +97,14 @@ int * mymalloc(int *array, int size) {
 	printf("Our Block: %d\n", ourBlock);
 	array[ourBlock] = size+1;
 	counter = ourBlock / 32 + 2;
-	int startBit = ourBlock % 32;
+	int startBit = (ourBlock % 32)+2;
 	printf("Counter =%d, startBit=%d\n", counter, startBit); 
 	int bitsToChange = size;
 	while(bitsToChange > 0){
 		int number = array[counter];
 
 		for(int i=1; i<=32; i++){
-			if(i < startBit + bitsToChange + 1 && i >= startBit){
+			if(i < startBit + bitsToChange && i >= startBit){
 				number |= 0x1;
 	//			printf("Edited %d in block %d\n", i, counter);
 				bitsToChange--;
@@ -132,10 +132,10 @@ int myfree( int *array, int *pointer){
 	//move back 1 from user block
 	counter -= 1;
 	printf("\nNumber of bits to free: %d\n", array[counter]);
-	int bitmapbit = counter % 32;
+	int bitmapbit = (counter % 32) -1;
 	int bitsToChange = array[counter];
 	while(bitsToChange > 0){
-		int bitmapblock = counter / 32+2;
+		int bitmapblock = (counter / 32)+2;
 		int bits = array[bitmapblock];
 		printf("\nblock: %d, bit: %d\n", bitmapblock, bitmapbit);
 		for(int i=0; i<32; i++){
@@ -144,6 +144,7 @@ int myfree( int *array, int *pointer){
 				bits &= 0xFFFFFFFE;
 				bitsToChange--;
 				bitmapbit++;
+				printf("Changed bit %d", i);
 			}
 			printf("%d",bits & 0x1);
 		}
