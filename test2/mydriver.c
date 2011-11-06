@@ -41,13 +41,30 @@ int main(){
 		
 	}
 
-	int *mem = mymalloc(myarray, 12);
+	
+	int *mem = mymalloc(myarray, 7);
 
 	printf("%d", mem - myarray); 
 
-	for (i =0; i < 19; i++) mem[i] = 0;
+	for (i =0; i < 7; i++) mem[i] = 0;
 
-	printf("\nMem Dump: \n");
+	printf("\nmem dump: \n");
+	for(int x = 0; x<128; x++){
+		printf("%d,", myarray[x]);
+	}
+
+	
+		
+
+	int *mem2 = mymalloc(myarray, 27);
+
+	printf("%d", mem2 - myarray); 
+
+	for (i =0; i < 27; i++) mem2[i] = 0;
+
+
+
+	printf("\nmem dump: \n");
 	for(int x = 0; x<128; x++){
 		printf("%d,", myarray[x]);
 	}
