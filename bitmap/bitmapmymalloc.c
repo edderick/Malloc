@@ -141,7 +141,7 @@ int myfree( int *array, int *pointer){
 		for(int i=0; i<32; i++){
 			bits = rotateRight(bits, 1);
 			if(i >= bitmapbit && i < bitmapbit + bitsToChange){
-				bits &= 0x0;
+				bits &= 0xFFFFFFFE;
 				bitsToChange--;
 				bitmapbit++;
 			}
@@ -153,10 +153,6 @@ int myfree( int *array, int *pointer){
 			bitmapbit = 0;
 		}
 		
-	}
-	int bits = array[2];
-	for(int i=0; i<32; i++){
-		printf("%d", bits&0x1);
 	}
 }
 

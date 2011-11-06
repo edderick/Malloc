@@ -34,5 +34,7 @@ int main(){
 	}
 	mymalloc(myarray, 20);
 	myfree(myarray, mem);
+	int *mem4 = mymalloc(myarray, 2);
+	*mem4 = 333;
 	printf("\n");
 }
