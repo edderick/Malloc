@@ -22,6 +22,7 @@ static int rotateRight( int x, int shift){
 static int rotateLeft( int x, int shift){
 	return ((unsigned int)x << shift) | ((unsigned int)x >> (32 - shift));
 }
+	
 int myinit(int *array, int size){
 
 	//Array must be big enough to initalize
@@ -69,7 +70,7 @@ int * mymalloc(int *array, int size) {
 				//Found a 0
 				if(zerocounter == 0) { 
 					//record first 0.
-					printf("Found a zero at block %d\n", (counter*32)+i);
+					//printf("Found a zero at block %d\n", (counter*32)+i);
 					block = (counter*32)+i ;
 				}
 				zerocounter++;
@@ -81,7 +82,7 @@ int * mymalloc(int *array, int size) {
 					ourBlock = block;
 				}
 				if(!zerocounter == 0){
-					printf("\nFinished a 0 stream, found %d\n", zerocounter);
+					//printf("\nFinished a 0 stream, found %d\n", zerocounter);
 					zerocounter = 0;
 				}
 			}
@@ -94,19 +95,19 @@ int * mymalloc(int *array, int size) {
 	}
 	//Finished looking through bitmap;
 	//We have our pointer!
-	printf("Our Block: %d\n", ourBlock);
+	//printf("Our Block: %d, size of %d\n", ourBlock, size+1);
 	array[ourBlock] = size+1;
 	counter = ourBlock / 32 + 2;
-	int startBit = (ourBlock % 32)+2;
-	printf("Counter =%d, startBit=%d\n", counter, startBit); 
-	int bitsToChange = size;
+	int startBit = (ourBlock % 32);
+	//printf("Counter=%d, startBit=%d\n", counter, startBit); 
+	int bitsToChange = size+1;
 	while(bitsToChange > 0){
 		int number = array[counter];
-
-		for(int i=1; i<=32; i++){
+		for(int i=0; i<32; i++){
 			if(i < startBit + bitsToChange && i >= startBit){
 				number |= 0x1;
 	//			printf("Edited %d in block %d\n", i, counter);
+	//			printf("bitsToChange: %d, startBit: %d\n", bitsToChange, startBit);
 				bitsToChange--;
 				startBit++;
 			}	
@@ -116,10 +117,10 @@ int * mymalloc(int *array, int size) {
 		if(bitsToChange > 0){
 			counter++;
 			bitsToChange--;
-			startBit = 0;
-			
+			startBit = 0;	
 		}
 	}
+
 	return array+ourBlock+1;
 }
 		
@@ -131,29 +132,28 @@ int myfree( int *array, int *pointer){
 	}
 	//move back 1 from user block
 	counter -= 1;
-	printf("\nNumber of bits to free: %d\n", array[counter]);
-	int bitmapbit = (counter % 32) -1;
+	int bitmapbit = (counter % 32);
 	int bitsToChange = array[counter];
+	int bitmapblock = (counter / 32)+2;
+	printf("\nNumber of bits to free: %d, from block: %d, starting at bit %d\n", array[counter], bitmapblock, bitmapbit);
 	while(bitsToChange > 0){
-		int bitmapblock = (counter / 32)+2;
 		int bits = array[bitmapblock];
 		printf("\nblock: %d, bit: %d\n", bitmapblock, bitmapbit);
 		for(int i=0; i<32; i++){
-			bits = rotateRight(bits, 1);
 			if(i >= bitmapbit && i < bitmapbit + bitsToChange){
 				bits &= 0xFFFFFFFE;
 				bitsToChange--;
 				bitmapbit++;
-				printf("Changed bit %d", i);
 			}
+			bits = rotateRight(bits, 1);
 			printf("%d",bits & 0x1);
 		}
 		array[bitmapblock] = bits;
 		if(bitsToChange > 0){
 			bitmapblock++;
+			bitsToChange--;
 			bitmapbit = 0;
 		}
 		
 	}
 }
-

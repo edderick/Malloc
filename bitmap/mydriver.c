@@ -25,6 +25,19 @@ int main(){
 	*(mem+3) = -30;
 	int *mem2 = mymalloc(myarray, 6);
 	*mem2 = 88;
+	int *test = mymalloc(myarray, 10);
+	*test = 23232;
+	myfree(myarray, mem);
+	myfree(myarray, mem2);
+	myfree(myarray, test);
+	mem = mymalloc(myarray, 120);
+	for(int i=0; i<120; i++){
+		*(mem+i) = i;
+	}
+	for(int i=0; i<mysize; i++){
+		printf("%d,", myarray[i]);
+	}
+	/*
 	int *mem3 = mymalloc(myarray, 35);
 	for(int i=0; i<35; i++){
 		*(mem3+i) = i;
@@ -32,7 +45,6 @@ int main(){
 	for(int i=0; i<mysize; i++){
 		printf("%d,", myarray[i]);
 	}
-	mymalloc(myarray, 20);
 	myfree(myarray, mem);
 	int *mem4 = mymalloc(myarray, 2);
 	*mem4 = 333;
@@ -40,4 +52,11 @@ int main(){
 		printf("%d,", myarray[i]);
 	}
 	printf("\n");
+	myfree(myarray, mem2);
+	myfree(myarray, mem3);
+	myfree(myarray, mem4);
+	for(int i=0; i<mysize; i++){
+		printf("%d,", myarray[i]);
+	}
+	*/
 }
