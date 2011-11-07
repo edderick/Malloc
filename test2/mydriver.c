@@ -16,11 +16,11 @@ int main(){
 	int i = 0;
 	int *mems[18];
 	
-	while (i < 18){
+	while (i < 17){
 		i++;
-		mems[i] = mymalloc(myarray, 6);
+		mems[i] = mymalloc(myarray, 1);
 
-		for(int j = 0; j < 6; j++){
+		for(int j = 0; j < 1; j++){
 			mems[i][j] = 0;
 		}
 
@@ -31,9 +31,11 @@ int main(){
 		
 	}
 	
-	int *mem5 = mymalloc(myarray, 8);
+	int *mem5 = mymalloc(myarray, 7);
 
-	printf("%d", (int)mem5); 
+	mem5[6] = 20;
+	
+	printf("%d", myarray - mem5); 
 
 //	for (i =0; i < 8; i++) mem[i] = 0;
 
@@ -47,9 +49,7 @@ int main(){
 
 	printf("\n \n reverse \n \n");
 
-	i=5;
-	while (i > 1){
-		i--;
+	for (i = 1; i < 5; i++){
 		myfree(myarray, mems[i]);
 
 		printf("\nMem Dump: \n");
@@ -76,9 +76,9 @@ int main(){
 
 	int *mem2 = mymalloc(myarray, 27);
 
-	printf("%d", mem2 - myarray); 
+	printf("%d", (int) mem2); 
 
-	for (i =0; i < 27; i++) mem2[i] = 0;
+	//for (i =0; i < 27; i++) mem2[i] = 0;
 
 
 
@@ -87,11 +87,11 @@ int main(){
 		printf("%d,", myarray[x]);
 	}
 
-	int *mem3 = mymalloc(myarray, 27);
+	//int *mem3 = mymalloc(myarray, 27);
 
-	printf("\n Should be zero: %d",(int) mem3 ); 
+	//printf("\n Should be zero: %d",(int) mem3 ); 
 
-	myfree(myarray, mem2);
+	//myfree(myarray, mem2);
 
 	printf("\nmem dump: \n");
 	for(int x = 0; x<128; x++){

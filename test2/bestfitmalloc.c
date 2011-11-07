@@ -27,6 +27,7 @@ TODO: Remove magic 1, 2 and 3 relating to offsets of ptrs
 #define OVERHEADS 3
 #define NEXT 1
 #define PREV 2
+#include <stdio.h>
 
 
 int myinit(int *array, int size){
@@ -49,12 +50,14 @@ int myinit(int *array, int size){
 //
 int * mymalloc(int *array, int size) {
 
-
+	if (size == 0) return (int *) 0;
 	if (array[0] == 0) return (int *) 0;
 
 	int next = array[0];
 	int last = next;
 
+	//make sure the block can be free'd
+	if (size < 3) size = 3;
 
 	//as long as the next 
 	do{
@@ -102,18 +105,31 @@ int * mymalloc(int *array, int size) {
 			}
 			//If its a bit bigger split the block in two
 			else{
-				array[0] = next + size + 1;
+				
 
-				array[next + size + 1] = blockSize - (size + 1);
+				int nextBlock = next + size + 1;
+				int nextPtr = array[next + NEXT];
+				int prevPtr = array[next + PREV];
+				array[nextBlock] = blockSize - (size + 1);
 
-				if (array[next + 1] == next) array[next + size + 2] = next + size + 1;
-				else array[next + size + 2] = array[next + 1];
 
-				if (array[next + 2] == next) array[next + size + 3] = next + size + 1;
-				else array[next + size + 3] = array[next + 2];
 
-				//Set previous blocks pointer to next block
-				if(array[next + 2] != next) array[array[next + size + 3] + 1] = array[0];
+				if (prevPtr == next){ 
+					array[0] = nextBlock;
+					array[nextBlock + PREV] = nextBlock;
+				}
+				else{ 
+					array[prevPtr + NEXT] = nextBlock;
+					array[nextBlock + PREV] = prevPtr;
+				}
+
+				if (nextPtr == next){
+					array[nextBlock + NEXT] = nextBlock;
+				}
+				else{
+					array[nextBlock + NEXT] = nextPtr;
+					array[nextPtr + PREV] = nextBlock; 
+				}
 
 			}
 
@@ -133,17 +149,27 @@ int * mymalloc(int *array, int size) {
 
 int myfree( int *array, int *pointer){
 
+
 	//pointer points to one place higher
 	int currentNode = pointer - array - 1;
 
+	printf("CurrentNode: %d",currentNode);
+	fflush(stdout);
+
+
 	if(array[currentNode] > 0) return 0;
 	else{
+		
+
 		//set size back to positive	
 		array[currentNode] = -array[currentNode];
 
 		//coalescesing should happen now
 		int size = array[currentNode];
+						
+/*
 		while(array[size + currentNode + 1] > 0){
+
 
 			int coalescePtr = currentNode + size + 1;
 			int previousPtr = currentNode + size + PREV + 1;
@@ -159,7 +185,8 @@ int myfree( int *array, int *pointer){
 			}
 			//next -> prev
 			if (array[previousPtr] ==  coalescePtr) {
-				array[0] = array[nextPtr];
+				if (array[nextPtr] != coalescePtr) array[0] = array[nextPtr];
+				else array[0] = 0;
 				array[array[nextPtr] + PREV] = array[nextPtr];
 			}else{
 				array[array[nextPtr] + PREV] = array[previousPtr];
@@ -168,6 +195,7 @@ int myfree( int *array, int *pointer){
 			size = size + array[size + currentNode + 1] + 1;	
 		}
 		array[currentNode] = size;
+*/
 
 		//start at 0 follow the free blocks to the first one that is larger
 		int nextNode =  array[0];
@@ -200,8 +228,10 @@ int myfree( int *array, int *pointer){
 
 
 
-		return 1;
 
+
+
+		return 1;
 
 	}
 

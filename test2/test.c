@@ -1,6 +1,6 @@
-/* Basic heap correctness test harness.
- * tjeh 02/12/2008, based on test harness by dan.
- */
+/*Basic heap correctness test harness.
+* tjeh 02/12/2008, based on test harness by dan.
+*/
 #include <stdlib.h>
 #include <stdio.h>
 #include "bestfitmalloc.h"
@@ -14,7 +14,6 @@ static int sizes[PSIZE];
 static int valid_pointers=0;
 static int count = 0;
 int main() {
-	
 	srand(SEED);
 	if (myinit(block, SIZE)==0) exit(EXIT_FAILURE);
 	while(1) {
@@ -22,8 +21,11 @@ int main() {
 			/* Allocate a new block */
 			int size = rand() % (1<<(rand()%12)) + 1;
 			if (size >0) {
+				printf("going in!");
+				fflush(stdout);
 				int * fp = mymalloc(block, size);
-				printf("%d", (int) fp);
+				printf("\nPointer %d Size %d ",  fp - block, size);
+				fflush(stdout);
 				if (fp != (int*)0) {
 					/* TJEH 02/12 - Keep track of block size */
 					sizes[valid_pointers] = size;
@@ -39,9 +41,13 @@ int main() {
 				}
 			} 
 		} else {
+//			printf("don't mind me just freeing some memory!");
+			fflush(stdout);	
+			
 			/* free a block  */
 			int fp = rand()%valid_pointers;
 
+	
 			/* TJEH 02/12 - Check the block still contains the data we put there */
 			for (int i = 0; i < sizes[fp]; i++) {
 				if (pointers[fp][i] != -(i + 42)) {
@@ -58,6 +64,9 @@ int main() {
 				sizes[fp-1] = sizes[fp];
 			}
 			valid_pointers--;
+
+			printf(" I survived ");
+			fflush(stdout);
 		}
 	}
 }
