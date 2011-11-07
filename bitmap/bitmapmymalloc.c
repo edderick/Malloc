@@ -129,9 +129,28 @@ int * mymalloc(int *array, int size) {
 		
 int myfree( int *array, int *pointer){
 	//free stuff
+	//check pointer
+	printf("Free!");
 	int counter = pointer - array;
 	if(counter > array[0]){
 		return 0;
+	}
+	
+	//Start checking if it is a relevant pointer.
+	
+	int index = 1; //Initial array index
+	int blockSize = array[index]; //size of bitmap
+	while(blockSize+index+1 < array[0]){
+		if(index == counter-1){
+			break;
+		} else {
+			index += blockSize+1; //Set array index to current array index + size of block.
+			blockSize = array[index]; //Set size
+		}
+		if(index + blockSize+1 >= array[0]){
+			//Not a pointer!
+			return 0;
+		}
 	}
 	//move back 1 from user block
 	counter -= 1;
@@ -154,7 +173,7 @@ int myfree( int *array, int *pointer){
 		array[bitmapblock] = bits;
 		if(bitsToChange > 0){
 			bitmapblock++;
-			//bitsToChange--;
+			bitsToChange--;
 			bitmapbit = 0;
 		}
 		
