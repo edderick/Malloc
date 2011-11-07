@@ -55,6 +55,9 @@ int * mymalloc(int *array, int size) {
 	if(size <= 0){
 		return 0;
 	}
+	if(size > array[0]){
+		return 0;
+	}
 	int block=0;
 	int blockNumber=0;
 	int zerocounter=0;
@@ -116,7 +119,7 @@ int * mymalloc(int *array, int size) {
 		array[counter] = number;
 		if(bitsToChange > 0){
 			counter++;
-			bitsToChange--;
+			//bitsToChange--;
 			startBit = 0;	
 		}
 	}
@@ -151,7 +154,7 @@ int myfree( int *array, int *pointer){
 		array[bitmapblock] = bits;
 		if(bitsToChange > 0){
 			bitmapblock++;
-			bitsToChange--;
+			//bitsToChange--;
 			bitmapbit = 0;
 		}
 		
