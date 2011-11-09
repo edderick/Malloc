@@ -53,6 +53,10 @@ int * mymalloc(int *array, int size) {
 	if (size == 0) return (int *) 0;
 	if (array[0] == 0) return (int *) 0;
 
+			printf("First Ptr: %d, First size: %d\n",array[0], array[array[0]]);
+			fflush(stdout);	
+
+
 	int next = array[0];
 	int last = next;
 
@@ -64,7 +68,8 @@ int * mymalloc(int *array, int size) {
 		int blockSize = array[next];
 		//If the block is big enough, give out a chunk
 		if (blockSize >= size) {
-			//Tell the world that it is not free anymore 
+		
+					//Tell the world that it is not free anymore 
 			array[next] = -size;
 			//If it fits perfectly just give it the block
 			if (blockSize <= size + 1){
@@ -134,6 +139,8 @@ int * mymalloc(int *array, int size) {
 			}
 
 			//The user is returned a reference to the data section
+			printf("Pointer Returned = %d", next+1);
+			fflush(stdout);
 			return &array[next + 1];
 		}
 
@@ -218,7 +225,6 @@ int myfree( int *array, int *pointer){
 		}
 		//next -> curr and curr -> next
 		if (previousNode == nextNode){
-			array[currentNode + PREV] = currentNode;
 			array[currentNode + NEXT] = currentNode;
 		}else{
 			array[nextNode + PREV] = currentNode;
@@ -226,13 +232,24 @@ int myfree( int *array, int *pointer){
 		}
 
 
+		 nextNode =  array[0];
+		 previousNode = 0;
+
+		while ((previousNode != nextNode)){
+		
+			printf("NextNode = %d, size = %d\n", nextNode, array[nextNode]);
+		        fflush(stdout);
+
+
+		
+			previousNode = nextNode;
+			nextNode = array[nextNode + NEXT];
+		}
 
 
 
-
-
-		return 1;
-
+	return 1;
+	
 	}
 
 }

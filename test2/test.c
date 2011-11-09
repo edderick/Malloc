@@ -21,10 +21,10 @@ int main() {
 			/* Allocate a new block */
 			int size = rand() % (1<<(rand()%12)) + 1;
 			if (size >0) {
-				printf("going in!");
+				printf("\nAllocating..\n");
 				fflush(stdout);
 				int * fp = mymalloc(block, size);
-				printf("\nPointer %d Size %d ",  fp - block, size);
+				printf("\nPointer %d Size %d \n",  fp - block, size);
 				fflush(stdout);
 				if (fp != (int*)0) {
 					/* TJEH 02/12 - Keep track of block size */
@@ -41,7 +41,7 @@ int main() {
 				}
 			} 
 		} else {
-//			printf("don't mind me just freeing some memory!");
+			printf("\nFreeing Memory..\n");
 			fflush(stdout);	
 			
 			/* free a block  */
@@ -64,9 +64,6 @@ int main() {
 				sizes[fp-1] = sizes[fp];
 			}
 			valid_pointers--;
-
-			printf(" I survived ");
-			fflush(stdout);
 		}
 	}
 }
