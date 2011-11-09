@@ -1,14 +1,6 @@
 #include <stdio.h>
 
 /**
- * Finds the smallest node that is large enough to fit the request in
- * @param array the array that is passed to the system
- * @param size The size requested
- * @param the best fitting node or NULL
- */
-int * findBestFit(int *array, int size);
-
-/**
  * Sets the blocks size to indicate free, returns it to the list and 
  * coalesces wit adjacent blocks if possible
  */
