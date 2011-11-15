@@ -2,7 +2,15 @@
 #include "block.h"
 #define NEXT 1
 #define PREV 2
+////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+	//IMPORTANT
+	//Start of list has a prev pointer to 0
+	//End of list has a next pointer to 0
+	//Next time, be consistant.
+
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 /** Ben's implementation that inserts in blockbased order
 int insertNode(int *array, int node, int size){
 	**
@@ -40,20 +48,24 @@ int insertNode(int *array, int node, int size){
 int insertNode(int *array, int node, int size){
 
 	//Find best fit returns the smallest node that is bigger
+	 
 	int nextNode = findBestFit(array, size);
 	int previousNode = getPreviousNode(array, nextNode);
-	
+//	6, 4. Next=1, prev = 1;
+		
 	
 	if (previousNode == 0) {
+		//At the start of the list	
 		setHead(array, node);
 	}else{
 		setNextNode(array, previousNode, node);
 		setPreviousNode(array, node, previousNode);
 	}
-
 	if (nextNode == 0){
-		setNextNode(array, node, node);
+		//At the end of the list
+		setNextNode(array, node, 0);
 	}else{
+		//In the middle (or first) so set the next pointers
 		setPreviousNode(array, nextNode, node);
 		setNextNode(array, node, nextNode);
 	}	
@@ -67,13 +79,18 @@ int removeNode(int *array, int node){
 	 * 1. Update previous's next pointer, following's previous pointer
 	 * 2. Return success.
 	 */
-	if(getEndSize(array,node) != getStartSize(array, node)){
+	if(isBlock(array, node) == 0){
 		return 0; //Not a node!
 	}
 	int nextNode = getNextNode(array, node);
 	int prevNode = getPreviousNode(array, node);
 	setNextNode(array, prevNode, nextNode);
 	setPreviousNode(array, nextNode, prevNode);
+	
+	if(node == getHead(array)){
+		//Node is the first in the list
+		setHead(array, nextNode);
+	}
 	return 1;
 }
 	 
@@ -97,24 +114,15 @@ int getPreviousNode(int *array, int node){
 	if (previousNode != node) return previousNode;
 	else return 0;
 }
-/**
- * @return the first size value for the node
- */
-int getStartSize(int *array, int node){
-	return array[node];
-}
 
-/**
- * @return the end size value for the node
- */
-int getEndSize(int *array, int node){
-	return array[array[node] + node];
-}
 /**
  * Sets the next node pointer to the given value
  * @return the next node in the list or NULL
  */
 int setNextNode(int *array, int node, int nextNode){
+	if(node == 0){
+		return 0;
+	}
 	array[node + NEXT] = nextNode;
 	return 1;
 }
@@ -124,6 +132,9 @@ int setNextNode(int *array, int node, int nextNode){
  * @return the next node in the list or NULL
  */
 int setPreviousNode(int *array, int node, int previousNode){;
+	if(node == 0){
+		return 0;
+	}
 	array[node + PREV] = previousNode;
 	return 1;
 }
@@ -179,8 +190,7 @@ int findBestFit(int *array, int size){
 //Edwards Implementation assuming the list is sorted
 int findBestFit(int *array, int size){
 	int currentNode = getHead(array);
-	
-	while((currentNode != 0) && (getBlockSize(&currentNode) < size)){
+	while((currentNode != 0) && (getBlockSize(array, currentNode) < size)){
 		currentNode = getNextNode(array, currentNode);
 	}
 
@@ -205,19 +215,19 @@ int testNode(){
 	//Test findBestFit
 	printf("\n\n");
 	int array2[10] = {0};
-	array2[0] = 1; //First free
-	array2[1] = 4; //Size of block
-	array2[2] = 6; //Next free
+	array2[0] = 6; //First free
+	array2[1] = 5; //Size of block
+	array2[2] = 0; //Next free
 	array2[3] = 6; //Prev free
-	array2[4] = 4; //Size of block
-	array2[5] = 88; //Empty
+	array2[4] = 88; //free block
+	array2[5] = 5; //Size of block
 	array2[6] = 4; //Size of block
 	array2[7] = 1; //Next free
-	array2[8] = 1; //Prev free
+	array2[8] = 0; //Prev free
 	array2[9] = 4; //Size of block
 	
 	printf("Testing findBestFit\n1) Expected Value: 1\n");
-	printf("Actual value: %d\n", findBestFit(array2, 2));
+	printf("Actual value: %d\n", findBestFit(array2, 5));
 	printf("2) Expected Value: 6\n");
 	printf("Actual value: %d\n", findBestFit(array2, 4));
 	
@@ -225,7 +235,8 @@ int testNode(){
 	printf("\n\n");
 	printf("Testing removeNode\n1) Expected Value: 1\n");
 	printf("Actual Value: %d\n", removeNode(array2, 6));
-	printf("Dumping array...\n");
+	printf("Expected: 1|5|0|0|88|5|4|1|0|4|\n");
+	printf("Actual:   ");
 	for(int x = 0; x < 10; x++){
 		printf("%d|", array2[x]);
 	}	
@@ -234,7 +245,8 @@ int testNode(){
 	printf("\n\n");
 	printf("Testing insertNode\n1) Expected value: 1\n");
 	printf("Actual Value: %d\n", insertNode(array2, 6, 4));
-	printf("1|4|6|6|4|88|4|1|1|4|\n");
+	printf("Expected: 6|5|0|6|88|5|4|1|0|4|\n");
+	printf("Actual:   ");
 	for(int x = 0; x < 10; x++){
 		printf("%d|", array2[x]);
 	} 

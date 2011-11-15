@@ -4,23 +4,28 @@
  * @param block Pointer to a block
  * @return the size of that block
  */
-int getBlockSize(int *block){
-	if (*block >= 0) return *block;
-	else return -(*block);
+int getBlockSize(int *array, int block){
+	if (array[block] >= 0) return array[block];
+	else return -array[block];
 }
-
+int isBlock(int *array, int block){
+	if(array[block] == array[block + array[block] - 1]){
+		return 1;
+	}
+	else return 0;
+}
 /**
  * @param block Pointer to a block
  * @param size The new USER size of the block
  */
-int setBlockSize(int *block, int size, int free){
+int setBlockSize(int *array, int block, int size, int free){
 	if (free > 0) {
-		*block = size; 
-		*(block + size + 1) = size;
+		array[block] = size; 
+		array[block + size - 1] = size;
 	}
 	else {
-		*block = -size;
-		*(block + size + 1) = -size;
+		array[block] = -size;
+		array[block + size - 1] = -size;
 	}
 }
 
@@ -28,8 +33,8 @@ int setBlockSize(int *block, int size, int free){
  * @param block Pointer to a block
  * @return 1 if block is free 0 otherwise
  */
-int getBlockIsFree(int *block){
-	if (*block >= 0) return 1;
+int getBlockIsFree(int *array, int block){
+	if (array[block] >= 0) return 1;
 	else return 0;
 }
 
