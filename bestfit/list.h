@@ -54,6 +54,10 @@ int findBestFit(int *array, int size);
  */
 int splitNode(int *array, int node, int size);
 
+/**
+ * @return the index of the first element of the list
+ */
+int getHead(int *array);
 
 
 int testNode();

@@ -1,4 +1,5 @@
 #include "list.h"
+#include "block.h"
 #define NEXT 1
 #define PREV 2
 
@@ -30,7 +31,7 @@ int insertNode(int *array, int node, int size){
 	array[currentNodeIndex + NEXT] = node;
 	array[ array[node + NEXT] + PREV ] = node;
 	return 1;
-}		
+}
 	
 int removeNode(int *array, int node){
 	/**
@@ -88,18 +89,22 @@ int setPreviousNode(int *array, int node, int previousNode){;
 	return 1;
 }
 
+int getHead(int *array){
+	return array[0];
+}
 
 
+/* Ben's Implementation assuming the list is not sorted.
 int findBestFit(int *array, int size){
 	//We want to find the best fit, iterate over frees and find smallest
-	/** 1. Get First Node
+	** 1. Get First Node
 	 *  2. Store it's size and index
 	 *  3. Move to next node
 	 *  4. Compare size of nodes
 	 *  5. If node > size but smaller than stored size, store this node instead.
 	 *  6. Continue until end of list
 	 *  7. Return node index
-	 */
+	 *
 	int firstNode = array[0];
 	int currentNodeIndex = array[0];
 	int currentBestNode = array[0];
@@ -125,6 +130,19 @@ int findBestFit(int *array, int size){
 	//Should have best node!
 	if(currentBestSize > -1) return currentBestNode;
 	else return 0;
+}
+*/
+
+//Edwards Implementation assuming the list is sorted
+int findBestFit(int *array, int size){
+	int currentNode = getHead(array);
+	
+	while((currentNode != 0) && (getBlockSize(&currentNode) < size)){
+		currentNode = getNextNode(array, currentNode);
+	}
+
+	return currentNode;
+
 }
 
 
