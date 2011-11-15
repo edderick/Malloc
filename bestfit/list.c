@@ -97,7 +97,19 @@ int getPreviousNode(int *array, int node){
 	if (previousNode != node) return previousNode;
 	else return 0;
 }
+/**
+ * @return the first size value for the node
+ */
+int getStartSize(int *array, int node){
+	return array[node];
+}
 
+/**
+ * @return the end size value for the node
+ */
+int getEndSize(int *array, int node){
+	return array[array[node] + node];
+}
 /**
  * Sets the next node pointer to the given value
  * @return the next node in the list or NULL
