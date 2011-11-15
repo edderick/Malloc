@@ -29,6 +29,18 @@ int getNextNode(int *array, int node);
 int getPreviousNode(int *array, int node);
 
 /**
+ * Get the first size 
+ */
+int getStartSize(int *array, node){
+	return array[node];
+}
+/**
+ * Get the size at the end
+ */
+int getEndSize(int *array, node){
+	return array[node + array[node] -1];
+}
+/**
  * Sets the next node pointer to the given value
  * @return 1 if successful
  */

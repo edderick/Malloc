@@ -67,15 +67,13 @@ int removeNode(int *array, int node){
 	 * 1. Update previous's next pointer, following's previous pointer
 	 * 2. Return success.
 	 */
-	if(array[node + array[node] -1] != array[node]){
+	if(getEndSize(array,node) != getStartSize(array, node)){
 		return 0; //Not a node!
 	}
-	int nextIndex = array[node+NEXT];
-	int prevIndex = array[node+PREV];
-	array[prevIndex + NEXT] = nextIndex;
-	array[nextIndex + PREV] = prevIndex;
-	array[array[node]+node -1 ] = -array[node]; //-1 to compensate for 0 array
-	array[node] = -array[node];
+	int nextNode = getNextNode(array, node);
+	int prevNode = getPreviousNode(array, node);
+	setNextNode(array, prevNode, nextNode);
+	setPreviousNode(array, nextNode, prevNode);
 	return 1;
 }
 	 
