@@ -51,7 +51,6 @@ int insertNode(int *array, int node, int size){
 	 
 	int nextNode = findBestFit(array, size);
 	int previousNode = getPreviousNode(array, nextNode);
-//	6, 4. Next=1, prev = 1;
 		
 	
 	if (previousNode == 0) {
@@ -198,6 +197,16 @@ int findBestFit(int *array, int size){
 
 }
 
+int splitNode(int *array, int node, int size){
+	int currentNodeSize = getBlockSize(array, node);
+	int newNode = node + size;
+	setBlockSize(array, newNode, currentNodeSize - size,1 );
+	setBlockSize(array, node, size, 1);
+	insertNode(array, newNode, currentNodeSize - size);
+	insertNode(array, node, size);
+	
+	return 1;
+}
 
 int testNode(){
 	
@@ -250,6 +259,21 @@ int testNode(){
 	for(int x = 0; x < 10; x++){
 		printf("%d|", array2[x]);
 	} 
+	printf("\n");
+	
+	//Test splitNode
+	int array3[10]= {0};
+	array3[0] = 1;
+	array3[1] = 9;
+	array3[2] = 0;
+	array3[3] = 0;
+	array3[9] = 9;
+	printf("\n\n");
+	printf("Testing splitNode\n1) Expected: 1|4|5|0|4|5|0|1|0|5\nActual:      ");
+	splitNode(array3, 1, 4);
+	for(int x=0; x<10;x++){
+		printf("%d|", array3[x]);
+	}
 	printf("\n");
 	
 }
