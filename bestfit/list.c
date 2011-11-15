@@ -70,7 +70,25 @@ int getPreviousNode(int *array, int node){
 	else return 0;
 }
 
+/**
+ * Sets the next node pointer to the given value
+ * @return the next node in the list or NULL
+ */
+int setNextNode(int *array, int node, int nextNode){
+	array[node + NEXT] = nextNode;
+	return 1;
+}
 
+/**
+ * Sets the previous node pointer to the given value
+ * @return the next node in the list or NULL
+ */
+int setPreviousNode(int *array, int node, int previousNode){;
+	array[node + PREV] = previousNode;
+	return 1;
+}
+
+}
 
 int findBestFit(int *array, int size){
 	//We want to find the best fit, iterate over frees and find smallest
