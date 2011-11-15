@@ -3,14 +3,15 @@
 #define NEXT 1
 #define PREV 2
 
+/** Ben's implementation that inserts in blockbased order
 int insertNode(int *array, int node, int size){
-	/**
+	**
 	 * 1. Find the node to insert after
 	 * 2. Set our size up
 	 * 3. Set our next using preceding's next.
 	 * 4. Set the preceding node's next to point to new
 	 * 5. Set following node's prev to us.
-	 */
+	 *
 	int firstNode = array[0];
 	int currentNodeIndex = array[0];
 	array[node] = size;
@@ -32,7 +33,35 @@ int insertNode(int *array, int node, int size){
 	array[ array[node + NEXT] + PREV ] = node;
 	return 1;
 }
+*/
+
+//Edwards Implementation that inserts in the order of block size
+//Node that block stuff should be done using block functions (size etc)
+int insertNode(int *array, int node, int size){
+
+	//Find best fit returns the smallest node that is bigger
+	int nextNode = findBestFit(array, size);
+	int previousNode = getPreviousNode(array, nextNode);
 	
+	
+	if (previousNode == 0) {
+		setHead(array, node);
+	}else{
+		setNextNode(array, previousNode, node);
+		setPreviousNode(array, node, previousNode);
+	}
+
+	if (nextNode == 0){
+		setNextNode(array, node, node);
+	}else{
+		setPreviousNode(array, nextNode, node);
+		setNextNode(array, node, nextNode);
+	}	
+
+	return 1;
+
+}
+
 int removeNode(int *array, int node){
 	/**
 	 * 1. Update previous's next pointer, following's previous pointer
@@ -93,6 +122,10 @@ int getHead(int *array){
 	return array[0];
 }
 
+int setHead(int *array, int node){
+	array[0] = node;
+	return 1;
+}
 
 /* Ben's Implementation assuming the list is not sorted.
 int findBestFit(int *array, int size){

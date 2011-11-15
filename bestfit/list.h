@@ -18,25 +18,25 @@ int removeNode(int *array, int node);
 
 /**
  * Follows the linked list to the next node
- * @return the next node in the list or NULL
+ * @return the next node in the list or 0 if end of list
  */
 int getNextNode(int *array, int node);
 
 /**
  * Follows the linked list to the previous node
- * @return the next node in the list or NULL
+ * @return the next node in the list or 0 if head
  */
 int getPreviousNode(int *array, int node);
 
 /**
  * Sets the next node pointer to the given value
- * @return the next node in the list or NULL
+ * @return 1 if successful
  */
 int setNextNode(int *array, int node, int nextNode);
 
 /**
  * Sets the previous node pointer to the given value
- * @return the next node in the list or NULL
+ * @return 1 if suucessful
  */
 int setPreviousNode(int *array, int node, int previousNode);
 
@@ -44,7 +44,7 @@ int setPreviousNode(int *array, int node, int previousNode);
  * Finds the smallest node that is large enough to fit the request in
  * @param head Pointer to the head of the list
  * @param size The size requested
- * @param the best fitting node or NULL
+ * @param the best fitting node or 0 if won't fit.
  */
 int findBestFit(int *array, int size);
 
@@ -59,5 +59,9 @@ int splitNode(int *array, int node, int size);
  */
 int getHead(int *array);
 
+/**
+ * @param node The new head
+ */
+int setHead(int *array, int head);
 
 int testNode();
