@@ -59,6 +59,19 @@ int getNextNode(int *array, int node){
 	else return 0;
 }
 
+
+/**
+ * Follows the linked list to the previous node
+ * @return the next node in the list or NULL
+ */
+int getPreviousNode(int *array, int node){
+	int previousNode = array[node + PREV];
+	if (previous != node) return previousNode;
+	else return 0;
+}
+
+
+
 int findBestFit(int *array, int size){
 	//We want to find the best fit, iterate over frees and find smallest
 	/** 1. Get First Node
@@ -140,12 +153,13 @@ int testNode(){
 
 	//Test insertNode
 	printf("\n\n");
-	printf("Testing insertNode\n1) Expected value: 1");
+	printf("Testing insertNode\n1) Expected value: 1\n");
 	printf("Actual Value: %d\n", insertNode(array2, 6, 4));
 	printf("1|4|6|6|4|88|4|1|1|4|\n");
 	for(int x = 0; x < 10; x++){
 		printf("%d|", array2[x]);
 	} 
+	printf("\n");
 	
 }
 

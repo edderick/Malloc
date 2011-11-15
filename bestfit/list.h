@@ -23,6 +23,24 @@ int removeNode(int *array, int node);
 int getNextNode(int *array, int node);
 
 /**
+ * Follows the linked list to the previous node
+ * @return the next node in the list or NULL
+ */
+int getPreviousNode(int *array, int node);
+
+/**
+ * Sets the next node pointer to the given value
+ * @return the next node in the list or NULL
+ */
+int setNextNode(int *array, int node, int nextNode);
+
+/**
+ * Sets the previous node pointer to the given value
+ * @return the next node in the list or NULL
+ */
+int setPreviousNode(int *array, int node, int previousNode);
+
+/**
  * Finds the smallest node that is large enough to fit the request in
  * @param head Pointer to the head of the list
  * @param size The size requested
