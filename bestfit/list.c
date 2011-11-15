@@ -1,6 +1,24 @@
 #include "list.h"
 #define NEXT 1
+#define PREV 2
 
+int removeNode(int *array, int node){
+	/**
+	 * 1. Update previous's next pointer, following's previous pointer
+	 * 2. Return success.
+	 */
+	if(array[node + array[node] -1] != array[node]){
+		return 0; //Not a node!
+	}
+	int nextIndex = array[node+NEXT];
+	int prevIndex = array[node+PREV];
+	array[prevIndex + NEXT] = nextIndex;
+	array[nextIndex + PREV] = prevIndex;
+	array[array[node]+node -1 ] = -array[node]; //-1 to compensate for 0 array
+	array[node] = -array[node];
+	return 1;
+}
+	 
 /**
  * Follows the linked list to the next node
  * @return the next node in the list or NULL
@@ -65,19 +83,30 @@ int testNode(){
 	//Test findBestFit
 	printf("\n\n");
 	int array2[10] = {0};
-	array2[0] = 1;
-	array2[1] = 3;
-	array2[2] = 6;
-	array2[4] = 3;
-	array2[5] = 300000;
-	array2[6] = 4;
-	array2[7] = 1;
-	array2[9] = 4;
+	array2[0] = 1; //First free
+	array2[1] = 4; //Size of block
+	array2[2] = 6; //Next free
+	array2[3] = 6; //Prev free
+	array2[4] = 4; //Size of block
+	array2[5] = 88; //Empty
+	array2[6] = 4; //Size of block
+	array2[7] = 1; //Next free
+	array2[8] = 1; //Prev free
+	array2[9] = 4; //Size of block
 	
 	printf("Testing findBestFit\n1) Expected Value: 1\n");
 	printf("Actual value: %d\n", findBestFit(array2, 2));
 	printf("2) Expected Value: 6\n");
 	printf("Actual value: %d\n", findBestFit(array2, 4));
+	
+	//Test removeNode
+	printf("\n\n");
+	printf("Testing removeNode\n1) Expected Value: 1\n");
+	printf("Actual Value: %d\n", removeNode(array2, 6));
+	printf("Dumping array...\n");
+	for(int x = 0; x < 10; x++){
+		printf("%d|", array2[x]);
+	}	
 }
 
 
