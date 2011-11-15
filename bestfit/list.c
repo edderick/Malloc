@@ -2,6 +2,36 @@
 #define NEXT 1
 #define PREV 2
 
+int insertNode(int *array, int node, int size){
+	/**
+	 * 1. Find the node to insert after
+	 * 2. Set our size up
+	 * 3. Set our next using preceding's next.
+	 * 4. Set the preceding node's next to point to new
+	 * 5. Set following node's prev to us.
+	 */
+	int firstNode = array[0];
+	int currentNodeIndex = array[0];
+	array[node] = size;
+	array[node+size -1] = size;
+
+	while(array[currentNodeIndex + NEXT] < node){
+		if(array[currentNodeIndex + NEXT]  == firstNode){
+			//Been around linked list, we must be the last block.
+			break; //Current node will be the last in the list
+			
+		}
+			
+		currentNodeIndex = getNextNode(array, currentNodeIndex);		
+	}
+	//Should have our node...
+	array[node + NEXT] = array[currentNodeIndex + NEXT];
+	array[node + PREV] = currentNodeIndex;
+	array[currentNodeIndex + NEXT] = node;
+	array[ array[node + NEXT] + PREV ] = node;
+	return 1;
+}		
+	
 int removeNode(int *array, int node){
 	/**
 	 * 1. Update previous's next pointer, following's previous pointer
@@ -107,6 +137,16 @@ int testNode(){
 	for(int x = 0; x < 10; x++){
 		printf("%d|", array2[x]);
 	}	
+
+	//Test insertNode
+	printf("\n\n");
+	printf("Testing insertNode\n1) Expected value: 1");
+	printf("Actual Value: %d\n", insertNode(array2, 6, 4));
+	printf("1|4|6|6|4|88|4|1|1|4|\n");
+	for(int x = 0; x < 10; x++){
+		printf("%d|", array2[x]);
+	} 
+	
 }
 
 
