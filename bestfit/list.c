@@ -66,7 +66,7 @@ int getNextNode(int *array, int node){
  */
 int getPreviousNode(int *array, int node){
 	int previousNode = array[node + PREV];
-	if (previous != node) return previousNode;
+	if (previousNode != node) return previousNode;
 	else return 0;
 }
 
@@ -88,7 +88,7 @@ int setPreviousNode(int *array, int node, int previousNode){;
 	return 1;
 }
 
-}
+
 
 int findBestFit(int *array, int size){
 	//We want to find the best fit, iterate over frees and find smallest

@@ -8,9 +8,15 @@ int freeBlock(int *block);
 
 /**
  * @param block Pointer to a block
- * @return the size of that block
+ * @return the USER size of that block
  */
 int getBlockSize(int *block);
+
+/**
+ * @param block Pointer to a block
+ * @param size The new USER size of the block
+ */
+int setBlockSize(int *block, int size, int free);
 
 /**
  * @param block Pointer to a block
