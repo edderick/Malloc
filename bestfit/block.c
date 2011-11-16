@@ -20,8 +20,13 @@ int isBlock(int *array, int block){
 /**
  * @param block Pointer to a block
  * @param size The new USER size of the block
+ * @return 1 if successful, else 0
  */
 int setBlockSize(int *array, int block, int size, int free){
+	
+	//overheads
+	if (size < 4) return 0;
+	
 	if (free > 0) {
 		array[block] = size; 
 		array[block + size - 1] = size;
@@ -30,6 +35,8 @@ int setBlockSize(int *array, int block, int size, int free){
 		array[block] = -size;
 		array[block + size - 1] = -size;
 	}
+
+	return 1;
 }
 
 /**
