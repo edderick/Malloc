@@ -1,10 +1,5 @@
 #include <stdio.h>
 
-/**
- * Sets the blocks size to indicate free, returns it to the list and 
- * coalesces wit adjacent blocks if possible
- */
-int freeBlock(int *block);
 
 /**
  * @param block Pointer to a block

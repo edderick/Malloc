@@ -10,12 +10,19 @@ int getBlockSize(int *array, int block){
 	else return -array[block];
 }
 
+
+/**
+ * Ensures the boundary tags are consistent
+ * @param block The block to check 
+ * @return 1 if the boundary tags match, 0 if they do not
+ */
 int isBlock(int *array, int block){
-	if(array[block] == array[block + array[block] - 1]){
+	if(array[block] == array[block + getBlockSize(array, block) - 1]){
 		return 1;
 	}
 	else return 0;
 }
+
 
 /**
  * @param block Pointer to a block
@@ -23,7 +30,6 @@ int isBlock(int *array, int block){
  * @return 1 if successful, else 0
  */
 int setBlockSize(int *array, int block, int size, int free){
-	
 	//overheads
 	if (size < 4) return 0;
 	
@@ -39,8 +45,9 @@ int setBlockSize(int *array, int block, int size, int free){
 	return 1;
 }
 
+
 /**
- * @param block Pointer to a block
+ * @param block Index of a block
  * @return 1 if block is free 0 otherwise
  */
 int getBlockIsFree(int *array, int block){
@@ -48,6 +55,13 @@ int getBlockIsFree(int *array, int block){
 	else return 0;
 }
 
+
+/**
+ * Coalesces two blocks into one
+ * @param block pointer to a block
+ * @param block pointer to annother block
+ * return 1 if success, 0 if fail
+ */
 int coalesceBlocks(int *array, int block1, int block2){
 	if(!(isBlock(array, block1) && isBlock(array, block2))){
 		return 0; //Not blocks
@@ -66,12 +80,18 @@ int coalesceBlocks(int *array, int block1, int block2){
 	return 1;
 } 
 
+
+/**
+ * Coalesces block with all neighbours
+ * @param block pointer to a block
+ * @return new block index on success, 0 on fail
+ */
 int coalesceWithNeighbours(int *array, int block){
 	//check left and right.
 	int blockSize = getBlockSize(array, block);
 	int nextBlock = block + blockSize;
-	int lastBlock = block - array[block-1];
-	//HackedyHax
+	int lastBlock = block - getBlockSize(array, block - 1);
+	//Ensure it doesn't try going over the end
 	if(nextBlock < getTotalArraySize(array)){
 		if(getBlockIsFree(array, nextBlock)){
 			coalesceBlocks(array, block, nextBlock);
@@ -81,9 +101,12 @@ int coalesceWithNeighbours(int *array, int block){
 	if(lastBlock > 1){
 		if(getBlockIsFree(array, lastBlock)){
 			coalesceBlocks(array, block, lastBlock);
+			return lastBlock;
 		}
 	}
+	return block;
 }
+
 
 /**
  * @return the size of array passed into myinit

@@ -11,44 +11,18 @@
 	
 	//Mmmmmm.. consistency
 
-
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-/** Ben's implementation that inserts in blockbased order
+
+
+/**
+ * Inserts a node into the free linked list
+ * Node is inserted to maintain smallest first
+ * @param array Pointer to the head of the list
+ * @param start Pointer to the start of the node
+ * @param size size of the node
+ * @return 1 if succsessful 0 if fails  
+ */
 int insertNode(int *array, int node, int size){
-	**
-	 * 1. Find the node to insert after
-	 * 2. Set our size up
-	 * 3. Set our next using preceding's next.
-	 * 4. Set the preceding node's next to point to new
-	 * 5. Set following node's prev to us.
-	 *
-	int firstNode = array[0];
-	int currentNodeIndex = array[0];
-	array[node] = size;
-	array[node+size -1] = size;
-
-	while(array[currentNodeIndex + NEXT] < node){
-		if(array[currentNodeIndex + NEXT]  == firstNode){
-			//Been around linked list, we must be the last block.
-			break; //Current node will be the last in the list
-			
-		}
-			
-		currentNodeIndex = getNextNode(array, currentNodeIndex);		
-	}
-	//Should have our node...
-	array[node + NEXT] = array[currentNodeIndex + NEXT];
-	array[node + PREV] = currentNodeIndex;
-	array[currentNodeIndex + NEXT] = node;
-	array[ array[node + NEXT] + PREV ] = node;
-	return 1;
-}
-*/
-
-//Edwards Implementation that inserts in the order of block size
-//Node that block stuff should be done using block functions (size etc)
-int insertNode(int *array, int node, int size){
-
 	//Find best fit returns the smallest node that is bigger
 	 
 	int nextNode = findBestFit(array, size);
@@ -72,9 +46,14 @@ int insertNode(int *array, int node, int size){
 	}	
 
 	return 1;
-
 }
 
+
+/**
+ * Removes a node from the free linked list
+ * @param start Pointer to the start of the node
+ * @return 1 if sucsessful 0 if fail
+ */
 int removeNode(int *array, int node){
 	/**
 	 * 1. Update previous's next pointer, following's previous pointer
@@ -97,7 +76,7 @@ int removeNode(int *array, int node){
 	 
 /**
  * Follows the linked list to the next node
- * @return the next node in the list or NULL
+ * @return the next node in the list or 0
  */
 int getNextNode(int *array, int node){
 	//if it's the head pointer
@@ -111,7 +90,7 @@ int getNextNode(int *array, int node){
 
 /**
  * Follows the linked list to the previous node
- * @return the next node in the list or NULL
+ * @return the next node in the list or 0
  */
 int getPreviousNode(int *array, int node){
 	//if it's the head pointer
@@ -122,9 +101,12 @@ int getPreviousNode(int *array, int node){
 	else return 0;
 }
 
+
 /**
  * Sets the next node pointer to the given value
- * @return the next node in the list or NULL
+ * @param node The node to change the pointer of
+ * @param nextNode The node to point to
+ * @return 1 if successful, 0 if fail
  */
 int setNextNode(int *array, int node, int nextNode){
 	if(node == 0){
@@ -134,9 +116,12 @@ int setNextNode(int *array, int node, int nextNode){
 	return 1;
 }
 
+
 /**
- * Sets the previous node pointer to the given value
- * @return the next node in the list or NULL
+ * Sets the previous node pointer to the given value 
+ * @param node The node to change the pointer of
+ * @param nextNode The node to point to
+ * @return 1 if successful, 0 if fail
  */
 int setPreviousNode(int *array, int node, int previousNode){;
 	if(node == 0){
@@ -146,76 +131,68 @@ int setPreviousNode(int *array, int node, int previousNode){;
 	return 1;
 }
 
+
+/**
+ * @return the index of the first element of the list
+ */
 int getHead(int *array){
 	return array[0];
 }
 
+
+/**
+ * @param node The new head
+ */
 int setHead(int *array, int node){
 	array[0] = node;
 	return 1;
 }
 
-/* Ben's Implementation assuming the list is not sorted.
-int findBestFit(int *array, int size){
-	//We want to find the best fit, iterate over frees and find smallest
-	** 1. Get First Node
-	 *  2. Store it's size and index
-	 *  3. Move to next node
-	 *  4. Compare size of nodes
-	 *  5. If node > size but smaller than stored size, store this node instead.
-	 *  6. Continue until end of list
-	 *  7. Return node index
-	 *
-	int firstNode = array[0];
-	int currentNodeIndex = array[0];
-	int currentBestNode = array[0];
-	int currentBestSize = array[currentNodeIndex];
-	int nextNodeIndex = 0;
-	if(currentBestSize < size){
-		currentBestSize = -1; //Marker to indicate that we didn't find any space
-	}
 
-	do{
-		nextNodeIndex = getNextNode(array, currentNodeIndex);
-		if(nextNodeIndex == 0){
-			break;
-		}
-		if(array[nextNodeIndex] >= size && (array[nextNodeIndex] < currentBestSize || currentBestSize == -1)){
-			//Better fit, replace items
-			currentBestNode = nextNodeIndex;
-			currentBestSize = array[nextNodeIndex];
-		}
-		currentNodeIndex = nextNodeIndex;
-	} while(currentNodeIndex != firstNode);
-	
-	//Should have best node!
-	if(currentBestSize > -1) return currentBestNode;
-	else return 0;
-}
-*/
-
-//Edwards Implementation assuming the list is sorted
+/**
+ * Finds the smallest node that is large enough to fit the request in
+ * @param head Pointer to the head of the list
+ * @param size The size requested
+ * @return the best fitting node or 0 if won't fit.
+ */
 int findBestFit(int *array, int size){
 	int currentNode = getHead(array);
 	while((currentNode != 0) && (getBlockSize(array, currentNode) < size)){
 		currentNode = getNextNode(array, currentNode);
 	}
-
 	return currentNode;
-
 }
 
+
+/**
+ * Splits one node into two smaller nodes
+ * The the node reffered to in the parameters will have size size
+ * @param node The node to be split
+ * @param size The size the first node will be
+ * @return 1 if success 0 if fail
+ */
 int splitNode(int *array, int node, int size){
 	int currentNodeSize = getBlockSize(array, node);
 	int newNode = node + size;
+	
+	//Make sure it's actually big enough
+	if (size > currentNodeSize) return 0;
+
+	//Split the block up
 	setBlockSize(array, newNode, currentNodeSize - size,1 );
 	setBlockSize(array, node, size, 1);
+	
+	//Juggle the linked list
 	removeNode(array, node);
 	insertNode(array, newNode, currentNodeSize - size);
 	insertNode(array, node, size);
 	
 	return 1;
 }
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//HERE ENDS REAL CODE :)
+//????????????????????????????????????????????????????????????
 
 int testNode(){
 	
