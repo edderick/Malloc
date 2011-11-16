@@ -41,6 +41,11 @@ int coalesceBlocks(int *array, int block1, int block2);
 /**
  * Coalesces block with all neighbours
  * @param block pointer to a block
- * return 1 on success, 0 on fail
+ * @return 1 on success, 0 on fail
  */
 int coalesceWithNeighbours(int *array, int block);
+
+/**
+ * @return the size of array passed into myinit
+ */
+ int getTotalArraySize(int *array);

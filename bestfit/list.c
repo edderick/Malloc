@@ -8,6 +8,8 @@
 	//Start of list has a prev pointer to 0
 	//End of list has a next pointer to 0
 	//Next time, be consistant.
+	
+	//Mmmmmm.. consistency
 
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -98,6 +100,9 @@ int removeNode(int *array, int node){
  * @return the next node in the list or NULL
  */
 int getNextNode(int *array, int node){
+	//if it's the head pointer
+	if (node == 0) return array[0];
+
 	int nextNode = array[node + NEXT];
 	if (nextNode != node) return nextNode;
 	else return 0;
@@ -109,6 +114,9 @@ int getNextNode(int *array, int node){
  * @return the next node in the list or NULL
  */
 int getPreviousNode(int *array, int node){
+	//if it's the head pointer
+	if (node == 0) return 0;
+	
 	int previousNode = array[node + PREV];
 	if (previousNode != node) return previousNode;
 	else return 0;
@@ -202,6 +210,7 @@ int splitNode(int *array, int node, int size){
 	int newNode = node + size;
 	setBlockSize(array, newNode, currentNodeSize - size,1 );
 	setBlockSize(array, node, size, 1);
+	removeNode(array, node);
 	insertNode(array, newNode, currentNodeSize - size);
 	insertNode(array, node, size);
 	
@@ -211,7 +220,7 @@ int splitNode(int *array, int node, int size){
 int testNode(){
 	
 	//Test getNextNode 
-	int array[10] = {0};
+	int array[11] = {0};
 	array[1] = 5;
 	array[5] = 1;
 	array[7] = 6;
@@ -223,73 +232,75 @@ int testNode(){
 	
 	//Test findBestFit
 	printf("\n\n");
-	int array2[10] = {0};
-	array2[0] = 6; //First free
-	array2[1] = 5; //Size of block
-	array2[2] = 0; //Next free
-	array2[3] = 6; //Prev free
-	array2[4] = 88; //free block
-	array2[5] = 5; //Size of block
-	array2[6] = 4; //Size of block
-	array2[7] = 1; //Next free
-	array2[8] = 0; //Prev free
-	array2[9] = 4; //Size of block
+	int array2[11] = {0};
+	array2[0] = 7; //First free
+	array2[1] = 11;
+	array2[2] = 5; //Size of block
+	array2[3] = 0; //Next free
+	array2[4] = 7; //Prev free
+	array2[5] = 88; //free block
+	array2[6] = 5; //Size of block
+	array2[7] = 4; //Size of block
+	array2[8] = 2; //Next free
+	array2[9] = 0; //Prev free
+	array2[10] = 4; //Size of block
 	
-	printf("Testing findBestFit\n1) Expected Value: 1\n");
+	printf("Testing findBestFit\n1) Expected Value: 2\n");
 	printf("Actual value: %d\n", findBestFit(array2, 5));
-	printf("2) Expected Value: 6\n");
+	printf("2) Expected Value: 7\n");
 	printf("Actual value: %d\n", findBestFit(array2, 4));
 	
 	//Test removeNode
 	printf("\n\n");
 	printf("Testing removeNode\n1) Expected Value: 1\n");
-	printf("Actual Value: %d\n", removeNode(array2, 6));
-	printf("Expected: 1|5|0|0|88|5|4|1|0|4|\n");
+	printf("Actual Value: %d\n", removeNode(array2, 7));
+	printf("Expected: 2|11|5|0|0|88|5|4|2|0|4|\n");
 	printf("Actual:   ");
-	for(int x = 0; x < 10; x++){
+	for(int x = 0; x < 11; x++){
 		printf("%d|", array2[x]);
 	}	
 
 	//Test insertNode
 	printf("\n\n");
 	printf("Testing insertNode\n1) Expected value: 1\n");
-	printf("Actual Value: %d\n", insertNode(array2, 6, 4));
-	printf("Expected: 6|5|0|6|88|5|4|1|0|4|\n");
+	printf("Actual Value: %d\n", insertNode(array2, 7, 4));
+	printf("Expected: 7|11|5|0|7|88|5|4|2|0|4|\n");
 	printf("Actual:   ");
-	for(int x = 0; x < 10; x++){
+	for(int x = 0; x < 11; x++){
 		printf("%d|", array2[x]);
 	} 
 	printf("\n");
 	
 	//Test splitNode
-	int array3[10]= {0};
-	array3[0] = 1;
-	array3[1] = 9;
-	array3[2] = 0;
+	int array3[11]= {0};
+	array3[0] = 2;
+	array3[1] = 11;
+	array3[2] = 9;
 	array3[3] = 0;
-	array3[9] = 9;
+	array3[4] = 0;
+	array3[10] = 9;
 	printf("\n\n");
-	printf("Testing splitNode\n1) Expected: 1|4|5|0|4|5|0|1|0|5\nActual:      ");
-	splitNode(array3, 1, 4);
-	for(int x=0; x<10;x++){
+	printf("Testing splitNode\n1) Expected: 2|11|4|6|0|4|5|0|2|0|5|\nActual:      ");
+	splitNode(array3, 2, 4);
+	for(int x=0; x<11;x++){
 		printf("%d|", array3[x]);
 	}
 	printf("\n");
 	
 	printf("\n\n");
 	//Test coalesce
-	printf("Testing coalesceBlocks\nExpected: 1|9|0|0|4|5|0|1|0|9|\nActual:   ");
-	coalesceBlocks(array3, 1, 5);
-	for(int x=0; x<10;x++){
+	printf("Testing coalesceBlocks\nExpected: 2|11|9|0|0|4|5|0|2|0|9|\nActual:   ");
+	coalesceBlocks(array3, 2, 6);
+	for(int x=0; x<11;x++){
 		printf("%d|", array3[x]);
 	}
 	printf("\n");
 	
 	printf("\n\n");
 	//Test coalesce with neighbours
-	printf("Testing coalesce with neighbours\nExpected: 1|9|0|0|88|5|4|0|0|9|\nActual:   ");
-	coalesceWithNeighbours(array2, 6);
-	for(int x=0; x<10; x++){
+	printf("Testing coalesce with neighbours\nExpected: 2|11|9|0|0|88|5|4|0|0|9|\nActual:   ");
+	coalesceWithNeighbours(array2, 7);
+	for(int x=0; x<11; x++){
 		printf("%d|", array2[x]);
 	}
 	printf("\n");

@@ -9,12 +9,14 @@ int getBlockSize(int *array, int block){
 	if (array[block] >= 0) return array[block];
 	else return -array[block];
 }
+
 int isBlock(int *array, int block){
 	if(array[block] == array[block + array[block] - 1]){
 		return 1;
 	}
 	else return 0;
 }
+
 /**
  * @param block Pointer to a block
  * @param size The new USER size of the block
@@ -43,7 +45,7 @@ int coalesceBlocks(int *array, int block1, int block2){
 	if(!(isBlock(array, block1) && isBlock(array, block2))){
 		return 0; //Not blocks
 	}
-	
+
 	int block1Size = getBlockSize(array, block1);
 	int block2Size = getBlockSize(array, block2);
 	int node;
@@ -62,13 +64,23 @@ int coalesceWithNeighbours(int *array, int block){
 	int blockSize = getBlockSize(array, block);
 	int nextBlock = block + blockSize;
 	int lastBlock = block - array[block-1];
-	if(nextBlock < 10){
-	if(getBlockIsFree(array, nextBlock)){
-		coalesceBlocks(array, block, nextBlock);
+	//HackedyHax
+	if(nextBlock < getTotalArraySize(array)){
+		if(getBlockIsFree(array, nextBlock)){
+			coalesceBlocks(array, block, nextBlock);
+		}
 	}
-	}
-	if(getBlockIsFree(array, lastBlock)){
-		coalesceBlocks(array, block, lastBlock);
+	//Nasty magic number is for array header
+	if(lastBlock > 1){
+		if(getBlockIsFree(array, lastBlock)){
+			coalesceBlocks(array, block, lastBlock);
+		}
 	}
 }
-	
+
+/**
+ * @return the size of array passed into myinit
+ */
+int getTotalArraySize(int *array){
+	return array[1];
+}
