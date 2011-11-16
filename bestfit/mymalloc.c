@@ -27,10 +27,10 @@ int myinit(int *array, int size){
 	array[1] = size;
 
 	//set up first linked list entry
-	array[2] = size - 4; //1 Overhead for first linked list, 2 for each allocation
+	array[2] = size - 2; //1 Overhead for first linked list, 2 for each allocation
 	array[size-1] = array[2]; //Tail size;
-	array[3] = 2; //Next pointer
-	array[4] = 2; //Tail pointer
+	array[3] = 0; //Next pointer
+	array[4] = 0; //Tail pointer
 	return 1;
 
 }

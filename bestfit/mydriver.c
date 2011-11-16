@@ -13,7 +13,7 @@ int main(){
 
 	printf("Initializing... \n");
 	printf("Mem Dump: \n");
-	for(int x = 0; x<30; x++){
+	for(int x = 0; x<128; x++){
 		printf("%d,", myarray[x]);
 	}   
 
