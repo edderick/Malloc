@@ -49,8 +49,26 @@ int coalesceBlocks(int *array, int block1, int block2){
 	int node;
 	if(block1 < block2) node = block1;
 	else node = block2;
-
+	//Remove the old blocks...
+	removeNode(array, block2);
+	removeNode(array, block1);
 	setBlockSize(array, node, block1Size + block2Size, 1);
-	setHead(array, 1);
 	insertNode(array, node, block1Size + block2Size);
+	return 1;
 } 
+
+int coalesceWithNeighbours(int *array, int block){
+	//check left and right.
+	int blockSize = getBlockSize(array, block);
+	int nextBlock = block + blockSize;
+	int lastBlock = block - array[block-1];
+	if(nextBlock < 10){
+	if(getBlockIsFree(array, nextBlock)){
+		coalesceBlocks(array, block, nextBlock);
+	}
+	}
+	if(getBlockIsFree(array, lastBlock)){
+		coalesceBlocks(array, block, lastBlock);
+	}
+}
+	

@@ -51,7 +51,7 @@ int insertNode(int *array, int node, int size){
 	 
 	int nextNode = findBestFit(array, size);
 	int previousNode = getPreviousNode(array, nextNode);
-	
+
 	if (previousNode == 0) {
 		//At the start of the list	
 		setHead(array, node);
@@ -60,7 +60,7 @@ int insertNode(int *array, int node, int size){
 		setNextNode(array, previousNode, node);
 		setPreviousNode(array, node, previousNode);
 	}
-	if (nextNode == 0 || nextNode == node){ //Needed if combining blocks
+	if (nextNode == 0){ //|| nextNode == node){ //Needed if combining blocks
 		//At the end of the list
 		setNextNode(array, node, 0);
 	}else{
@@ -285,6 +285,14 @@ int testNode(){
 	}
 	printf("\n");
 	
+	printf("\n\n");
+	//Test coalesce with neighbours
+	printf("Testing coalesce with neighbours\nExpected: 1|9|0|0|88|5|4|0|0|9|\nActual:   ");
+	coalesceWithNeighbours(array2, 6);
+	for(int x=0; x<10; x++){
+		printf("%d|", array2[x]);
+	}
+	printf("\n");
 }
 
 
