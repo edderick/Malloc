@@ -179,7 +179,7 @@ int splitNode(int *array, int node, int size){
 	if (size > currentNodeSize) return 0;
 
 	//Split the block up
-	setBlockSize(array, newNode, currentNodeSize - size,1 );
+	setBlockSize(array, newNode, currentNodeSize - size, 1);
 	setBlockSize(array, node, size, 1);
 	
 	//Juggle the linked list

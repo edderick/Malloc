@@ -6,6 +6,7 @@
  */
 #include "mymalloc.h"
 #define MIN_ARRAY_SIZE 128
+#define OVERHEADS 4
 #include <stdio.h>
 
 #include "block.h"
@@ -20,7 +21,7 @@ int myinit(int *array, int size){
 	}
 
 	//point head to first linked list entry
-	array[0] = 1;
+	array[0] = 2;
 
 	//store total array size
 	array[1] = size;
@@ -35,7 +36,33 @@ int myinit(int *array, int size){
 }
 
 int *mymalloc(int *array, int size){
+	//I'm so scared :s
+
+	//Convert from user size to backend size
+	size = size + 2;
 	
+	//Ensure we can put linked list pointer back into this block
+	if (size < OVERHEADS) size = OVERHEADS;
+
+	int bestFitNode = findBestFit(array, size);
+
+	//If there isn't space in the array
+	if (bestFitNode == 0) return (int *) 0;
+	
+	//Must be big enough to fit pointers in the remainder
+	if (getBlockSize(array, bestFitNode) > size + OVERHEADS){
+		//******** I have a slight problem with the cohesion here
+		//I feel maybe a function split block would we nice
+		//Possibly grouped together in a splitMemory()
+		splitNode(array, bestFitNode, size);
+	}
+
+	//UnFree the block and node -- A grouping as unfreeMemory() might be nice?
+	removeNode(array, bestFitNode);
+	setBlockFree(array, bestFitNode, 0);
+
+	return &array[bestFitNode + 1];
+
 }
 
 int myfree( int *array, int *pointer){

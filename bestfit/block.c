@@ -45,6 +45,17 @@ int setBlockSize(int *array, int block, int size, int free){
 	return 1;
 }
 
+/**
+ * Sets the free status of a block based on parameter
+ * @param block The block to set free
+ * @param free whether to free it or not
+ * @return status
+ */
+int setBlockFree(int *array, int block, int free){
+		setBlockSize(array, block, getBlockSize(array, block), free);
+		return 1;
+}
+
 
 /**
  * @param block Index of a block
