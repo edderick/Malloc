@@ -23,7 +23,6 @@ int main() {
 		if (valid_sizes == 0 || ((valid_sizes < PSIZE) && ((rand() & 7) < 5))) 
 		{
 			int size = rand() % (1 << (rand() % 12)) + 1;
-		
 			if (freeSpace >= size) {
 					sizes[valid_sizes] = size;
 					valid_sizes++;

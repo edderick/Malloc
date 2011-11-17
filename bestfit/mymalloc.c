@@ -50,7 +50,7 @@ int *mymalloc(int *array, int size){
 	if (bestFitNode == 0) return (int *) 0;
 	
 	//Must be big enough to fit pointers in the remainder
-	if (getBlockSize(array, bestFitNode) > size + OVERHEADS){
+	if (getBlockSize(array, bestFitNode) >= size + OVERHEADS){
 		//******** I have a slight problem with the cohesion here
 		//I feel maybe a function split block would we nice
 		//Possibly grouped together in a splitMemory()
