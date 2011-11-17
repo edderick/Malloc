@@ -54,12 +54,6 @@ int *mymalloc(int *array, int size){
 		//I feel maybe a function split block would we nice
 		//Possibly grouped together in a splitMemory()
 		splitNode(array, bestFitNode, size);
-	} else if(getBlockSize(array, bestFitNode) != size){
-		//We want to find another, bigger block;
-		bestFitNode = findBestFit(array, size+OVERHEADS);
-		if(bestFitNode == 0) return (int *) 0;
-		splitNode(array, bestFitNode, size);
-		
 	} 
 
 	//UnFree the block and node -- A grouping as unfreeMemory() might be nice?
