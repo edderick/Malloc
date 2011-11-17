@@ -81,3 +81,22 @@ int myfree( int *array, int *pointer){
 	coalesceWithNeighbours(array, node);
 	return 1;
 }
+
+int mydispose(int *array){
+	/* 1. Head pointer is 0
+	   2. Array size = size of block onei + 2
+	   3. Size of block 1 is consistent
+	*/
+
+	if(array[0] == 0){
+		if(array[1] == getBlockSize(array, 2) + 2){
+			if(isBlock(array, 2)){
+				return 1;
+			}
+		}
+	}
+	
+	return 0;
+
+}
+
