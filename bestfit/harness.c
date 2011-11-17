@@ -58,7 +58,6 @@ int main() {
 		if (valid_pointers == 0 || ((valid_pointers < PSIZE) && ((rand() & 7) < 5))) {
  
 			int size = rand() % (1 << (rand() % 12)) + 1;
- 
 			int * fp = mymalloc(block, size);
  
 			if (fp != (int*) 0) {
@@ -73,7 +72,7 @@ int main() {
 						100. * count / max,
 						valid_pointers,
 						((double) clock() - start) / CLOCKS_PER_SEC);
- 
+				
 				exit(EXIT_SUCCESS);
 			}
 		} else {

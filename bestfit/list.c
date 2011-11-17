@@ -13,6 +13,17 @@
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+/*Get the last item in the list, because its needed for inserting at the end of the list*/
+
+int getPreviousEnd(int *array, int size){
+	int currentNode = getHead(array);
+	int previousNode = getPreviousNode(array, currentNode);
+	while((currentNode != 0) && (getBlockSize(array, currentNode) <= size)){
+		previousNode = currentNode;
+		currentNode = getNextNode(array, currentNode);
+	}
+	return previousNode;
+}
 
 /**
  * Inserts a node into the free linked list
@@ -22,11 +33,22 @@
  * @param size size of the node
  * @return 1 if succsessful 0 if fails  
  */
+
 int insertNode(int *array, int node, int size){
 	//Find best fit returns the smallest node that is bigger
-	 
 	int nextNode = findBestFit(array, size);
+	//for a node at the end, previous should be 260.
 	int previousNode = getPreviousNode(array, nextNode);
+
+	if (nextNode == 0){ //|| nextNode == node){ //Needed if combining block
+		//At the end of the list	
+		previousNode = getPreviousEnd(array, size);
+		setNextNode(array, node, 0);
+	}else{
+		//In the middle (or first) so set the next pointers
+		setPreviousNode(array, nextNode, node);
+		setNextNode(array, node, nextNode);
+	}	
 
 	if (previousNode == 0) {
 		//At the start of the list	
@@ -36,14 +58,6 @@ int insertNode(int *array, int node, int size){
 		setNextNode(array, previousNode, node);
 		setPreviousNode(array, node, previousNode);
 	}
-	if (nextNode == 0){ //|| nextNode == node){ //Needed if combining blocks
-		//At the end of the list
-		setNextNode(array, node, 0);
-	}else{
-		//In the middle (or first) so set the next pointers
-		setPreviousNode(array, nextNode, node);
-		setNextNode(array, node, nextNode);
-	}	
 
 	return 1;
 }

@@ -6,17 +6,21 @@ int main(){
 	//testNode();
 
 
-	int myarray[128] = {0};
-	int mysize = 128;
+	int myarray[512] = {0};
+	int mysize = 512;
 
 	int result = myinit(myarray, mysize);
-
+	result = result;
 	printf("Initializing... \n");
 	printf("Mem Dump: \n");
-	for(int x = 0; x<128; x++){
+	for(int x = 0; x<mysize; x++){
 		printf("%d,", myarray[x]);
 	}   
-
+	mymalloc(myarray, 256);
+	for(int x = 0; x<mysize; x++){
+		printf("%d|", myarray[x]);
+	}
+/*
 	int i = 0;
 	int *mems[18];
 
@@ -36,12 +40,15 @@ int main(){
 	}   
 	result = myfree(myarray, mems[1]);
 	result = myfree(myarray, mems[2]);
+	mems[0] = mymalloc(myarray, 5);
+	printf("mems[0]: %li", mems[0]-myarray);
+	if(mems[0] == 0) printf("Error!");
 	printf("myfree: %d", result);
 		printf("\nPost free Mem Dump: \n");
 		for(int x = 0; x<128; x++){
 			printf("%d,", myarray[x]);
 		}
-/*	int *mem5 = mymalloc(myarray, 7); 
+*	int *mem5 = mymalloc(myarray, 7); 
 
 	mem5[6] = 20; 
 

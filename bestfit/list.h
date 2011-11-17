@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+int getPreviousEnd(int *array, int size);
+
 int insertNode(int *array, int node, int size);
 
 int removeNode(int *array, int node);
