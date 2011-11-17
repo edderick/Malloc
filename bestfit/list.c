@@ -8,8 +8,8 @@
 	//Start of list has a prev pointer to 0
 	//End of list has a next pointer to 0
 	//Next time, be consistant.
-	
-	//Mmmmmm.. consistency
+	//Size is the total size, user size is size -2
+	//This is for easy block access (and I've coded that way)
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -281,6 +281,7 @@ int testNode(){
 		printf("%d|", array2[x]);
 	}
 	printf("\n");
+	return 1;
 }
 
 

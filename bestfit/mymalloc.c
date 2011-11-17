@@ -66,5 +66,19 @@ int *mymalloc(int *array, int size){
 }
 
 int myfree( int *array, int *pointer){
+	/* 1. -1 from pointer
+	   2. Check pointer is valid
+	   3. Set it to free
+	   4. Insert it into the list of frees
+	   5. Coalesce with neighbours
+        */	
+	int node = pointer - array;
+	node--;	
+	if(node < 0 || node >= getTotalArraySize(array)) return 0;
+	if(isBlock(array, node) == 0) return 0;
 	
+	setBlockFree(array, node, 1);
+	insertNode(array, node, getBlockSize(array, node));
+	coalesceWithNeighbours(array, node);
+	return 1;
 }

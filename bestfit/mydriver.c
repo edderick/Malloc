@@ -34,7 +34,13 @@ int main(){
 		}   
 
 	}   
-
+	result = myfree(myarray, mems[1]);
+	result = myfree(myarray, mems[2]);
+	printf("myfree: %d", result);
+		printf("\nPost free Mem Dump: \n");
+		for(int x = 0; x<128; x++){
+			printf("%d,", myarray[x]);
+		}
 /*	int *mem5 = mymalloc(myarray, 7); 
 
 	mem5[6] = 20; 
