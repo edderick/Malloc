@@ -87,14 +87,11 @@ int mydispose(int *array){
 	   2. Array size = size of block onei + 2
 	   3. Size of block 1 is consistent
 	*/
-
-	if(array[0] == 0){
-		if(array[1] == getBlockSize(array, 2) + 2){
-			if(isBlock(array, 2)){
-				return 1;
-			}
-		}
+	printf("array[0]: %d, array[2]: %d ", array[0], array[2]);
+	if(array[0] == 2 && array[2] == array[1]-2){
+			return 1;
 	}
+	
 	
 	return 0;
 
