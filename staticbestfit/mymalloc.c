@@ -2,7 +2,18 @@
    This program was written by:
    Edward Seabrook - ejfs1g10@ecs.soton.ac.uk
    Ben Clive -  bac2g10@ecs.soton.ac.uk
- */
+	
+   This implementation of malloc uses a best fit allocation algorithm.
+   A linked list maintained in order of decreasing size allows us to 
+   quickly allocate the best fit - If the block is too big, then we split
+   it into two smaller blocks, one the required size, and one the 
+   remainder.
+   Upon freeing the blocks, they are coalesced with any of thier 
+   neighbours if they are also free. This is done by making use of sizes
+   (+ve for free, -ve for allocated) at each end of the block. 
+   Our approach aims to be very modular (ie Abstract) and very readable.
+
+*/
 #include "mymalloc.h"
 #define MIN_ARRAY_SIZE 6
 #define OVERHEADS 4
