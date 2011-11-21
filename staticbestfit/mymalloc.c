@@ -5,11 +5,12 @@
  
  */
 #include "mymalloc.h"
-#define MIN_ARRAY_SIZE 128
+#define MIN_ARRAY_SIZE 6
 #define OVERHEADS 4
-#include <stdio.h>
 #define NEXT 1
 #define PREV 2
+#include <pthread.h>
+pthread_mutex_t mutex;
 
 //**Prototypes**
 
@@ -18,8 +19,6 @@ static int insertNode(int *array, int node, int size);
 static int removeNode(int *array, int node);
 static int getNextNode(int *array, int node);
 static int getPreviousNode(int *array, int node);
-//static int getStartSize(int *array, int node);
-//static int getEndSize(int *array, int node);
 static int setNextNode(int *array, int node, int nextNode);
 static int setPreviousNode(int *array, int node, int previousNode);
 static int findBestFit(int *array, int size);
@@ -112,7 +111,6 @@ int mydispose(int *array){
 	   2. Array size = size of block onei + 2
 	   3. Size of block 1 is consistent
 	*/
-	printf("array[0]: %d, array[2]: %d ", array[0], array[2]);
 	if(array[0] == 2 && array[2] == array[1]-2){
 			return 1;
 	}
@@ -121,6 +119,37 @@ int mydispose(int *array){
 	return 0;
 
 }
+
+int myinit_mt(int *array, int size){
+	pthread_mutex_lock(&mutex);
+	int result = myinit(array, size);
+	pthread_mutex_unlock(&mutex);
+	return result;
+}
+
+int * mymalloc_mt(int *array, int size){
+	pthread_mutex_lock(&mutex);
+	int * result = mymalloc(array, size);
+	pthread_mutex_unlock(&mutex);
+	return result;
+}
+
+int myfree_mt(int *array, int * block){
+	pthread_mutex_lock(&mutex);
+	int result = myfree(array, block);
+	pthread_mutex_unlock(&mutex);
+	return result;
+}
+
+int mydispose_mt(int *array){
+	pthread_mutex_lock(&mutex);
+	int result = mydispose(array);
+	pthread_mutex_unlock(&mutex);
+	return result;
+}
+
+
+
 
 /*Get the last item in the list, because its needed for inserting at the end of the list*/
 

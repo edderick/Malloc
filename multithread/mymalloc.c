@@ -5,7 +5,7 @@
  
  */
 #include "mymalloc.h"
-#define MIN_ARRAY_SIZE 128
+#define MIN_ARRAY_SIZE 6 
 #define OVERHEADS 4
 #include <stdio.h>
 #include<pthread.h>
