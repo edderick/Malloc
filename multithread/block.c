@@ -1,13 +1,18 @@
 #include "block.h"
 #include "list.h"
-
+#include<pthread.h>
 /**
  * @param block Pointer to a block
  * @return the size of that block
  */
 int getBlockSize(int *array, int block){
-	if (array[block] >= 0) return array[block];
-	else return -array[block];
+	if (array[block] >= 0) {
+		int size = array[block];
+		return size;
+	} else { 
+		int size = -array[block];
+		return size;
+	}
 }
 
 
@@ -17,10 +22,13 @@ int getBlockSize(int *array, int block){
  * @return 1 if the boundary tags match, 0 if they do not
  */
 int isBlock(int *array, int block){
-	if(array[block] == array[block + getBlockSize(array, block) - 1]){
+	if(array[block] == array[block + getBlockSize(array, block) - 1]){	
 		return 1;
 	}
-	else return 0;
+	else {
+		
+		 return 0;
+	}
 }
 
 
@@ -62,7 +70,8 @@ int setBlockFree(int *array, int block, int free){
  * @return 1 if block is free 0 otherwise
  */
 int getBlockIsFree(int *array, int block){
-	if (array[block] >= 0) return 1;
+	int arrayBlock = array[block];
+	if (arrayBlock >= 0) return 1;
 	else return 0;
 }
 
@@ -88,6 +97,7 @@ int coalesceBlocks(int *array, int block1, int block2){
 	removeNode(array, block1);
 	setBlockSize(array, node, block1Size + block2Size, 1);
 	insertNode(array, node, block1Size + block2Size);
+	
 	return 1;
 } 
 
@@ -102,8 +112,9 @@ int coalesceWithNeighbours(int *array, int block){
 	int blockSize = getBlockSize(array, block);
 	int nextBlock = block + blockSize;
 	int lastBlock = block - getBlockSize(array, block - 1);
+	int totalArraySize = getTotalArraySize(array);
 	//Ensure it doesn't try going over the end
-	if(nextBlock < getTotalArraySize(array)){
+	if(nextBlock < totalArraySize){
 		if(getBlockIsFree(array, nextBlock)){
 			coalesceBlocks(array, block, nextBlock);
 		}
@@ -123,5 +134,6 @@ int coalesceWithNeighbours(int *array, int block){
  * @return the size of array passed into myinit
  */
 int getTotalArraySize(int *array){
-	return array[1];
+	int size = array[1];
+	return size;
 }

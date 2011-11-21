@@ -8,13 +8,14 @@
 #define MIN_ARRAY_SIZE 128
 #define OVERHEADS 4
 #include <stdio.h>
+#include<pthread.h>
 
 #include "block.h"
 #include "list.h"
+pthread_mutex_t mutex;
 
-
-int myinit(int *array, int size){
-	
+int myinit_mt(int *array, int size){
+	pthread_mutex_lock(&mutex);	
 	//check that the array is large enough
 	if(size < MIN_ARRAY_SIZE){
 		return 0;
@@ -31,11 +32,13 @@ int myinit(int *array, int size){
 	array[size-1] = array[2]; //Tail size;
 	array[3] = 0; //Next pointer
 	array[4] = 0; //Tail pointer
+	pthread_mutex_unlock(&mutex);
 	return 1;
 
 }
 
-int *mymalloc(int *array, int size){
+int *mymalloc_mt(int *array, int size){
+	pthread_mutex_lock(&mutex);
 	//I'm so scared :s
 	//Convert from user size to backend size
 	size = size + 2;
@@ -59,18 +62,19 @@ int *mymalloc(int *array, int size){
 	//UnFree the block and node -- A grouping as unfreeMemory() might be nice?
 	setBlockFree(array, bestFitNode, 0);
 	removeNode(array, bestFitNode);
-
+	pthread_mutex_unlock(&mutex);
 	return &array[bestFitNode + 1];
 
 }
 
-int myfree( int *array, int *pointer){
+int myfree_mt( int *array, int *pointer){
 	/* 1. -1 from pointer
 	   2. Check pointer is valid
 	   3. Set it to free
 	   4. Insert it into the list of frees
 	   5. Coalesce with neighbours
         */	
+	pthread_mutex_lock(&mutex);
 	int node = pointer - array;
 	node--;	
 	if(node < 0 || node >= getTotalArraySize(array)) return 0;
@@ -79,6 +83,7 @@ int myfree( int *array, int *pointer){
 	setBlockFree(array, node, 1);
 	insertNode(array, node, getBlockSize(array, node));
 	coalesceWithNeighbours(array, node);
+	pthread_mutex_unlock(&mutex);
 	return 1;
 }
 
