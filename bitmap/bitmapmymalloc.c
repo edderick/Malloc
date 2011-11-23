@@ -66,6 +66,10 @@ int * mymalloc(int *array, int size) {
 	int counter=0;
 	while(counter < array[1]){
 		int bits = array[counter+2];
+		if(bits == -1){
+			counter++;
+			continue;
+		}
 		printf("\n++%d++\n", counter+2);
 		for(int i=0; i<32; i++){
 			printf("%d", bits&0x1);
@@ -119,7 +123,6 @@ int * mymalloc(int *array, int size) {
 		array[counter] = number;
 		if(bitsToChange > 0){
 			counter++;
-			//bitsToChange--;
 			startBit = 0;	
 		}
 	}
@@ -136,24 +139,45 @@ int myfree( int *array, int *pointer){
 		return 0;
 	}
 	
+	counter -= 1;
 	//Start checking if it is a relevant pointer.
 	
-	int index = 1; //Initial array index
-	int blockSize = array[index]; //size of bitmap
-	while(blockSize+index+1 < array[0]){
-		if(index == counter-1){
+	int index = 2; //Initial array index
+	int blockSize = array[1]; //size of bitmap
+//	1w0
+	while(blockSize+index+1 < counter){
+		printf("Index: %d, blockSize: %d, counter: %d\n", index, blockSize, counter);
+		if(index == counter){
+			printf("Pointed to %d\n", index);
 			break;
 		} else {
-			index += blockSize+1; //Set array index to current array index + size of block.
+			index += blockSize; //Set array index to current array index + size of block.
 			blockSize = array[index]; //Set size
 		}
-		if(index + blockSize+1 >= array[0]){
+		if(blockSize == 0){
+			//Find next 0?
+				printf("Lost size! Searching...");
+			int bitmapIndex = index /32 + 2;
+			int bitmapbit = index % 32;
+			int mask = 1 << bitmapbit;
+			while(array[bitmapIndex] & mask == 0){
+				mask = mask << 1;
+				bitmapbit++;
+				printf("Bitmapbit: %d\n", bitmapbit);
+				if(bitmapbit == 32){
+					bitmapbit = 0;
+					bitmapIndex++;
+				}
+			}
+			//Breaks on first 1?
+			blockSize = array[bitmapbit];	
+		}
+		if(index + blockSize+1 > counter){
 			//Not a pointer!
 			return 0;
 		}
 	}
 	//move back 1 from user block
-	counter -= 1;
 	int bitmapbit = (counter % 32);
 	int bitsToChange = array[counter];
 	int bitmapblock = (counter / 32)+2;
@@ -170,12 +194,21 @@ int myfree( int *array, int *pointer){
 			bits = rotateRight(bits, 1);
 			printf("%d",bits & 0x1);
 		}
+		printf("\nbits: %d\n", bits);
+		printf("\nArray[3]1: %d\n", array[3]);
+		fflush(stdout);
 		array[bitmapblock] = bits;
+		fflush(stdout);
+		printf("\nArray[3]: %d\n", array[3]);
+		fflush(stdout);
 		if(bitsToChange > 0){
 			bitmapblock++;
-			bitsToChange--;
 			bitmapbit = 0;
 		}
 		
+	}
+	int bits = array[3];
+	for(int i=0; i<32; i++){
+		printf("%d", bits & 0x1);
 	}
 }
