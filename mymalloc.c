@@ -8,7 +8,7 @@
    quickly allocate the best fit - If the block is too big, then we split
    it into two smaller blocks, one the required size, and one the 
    remainder.
-   Upon freeing the blocks, they are coalesced with any of thier 
+   Upon freeing the blocks, they are coalesced with any of their 
    neighbours if they are also free. This is done by making use of sizes
    (+ve for free, -ve for allocated) at each end of the block. 
    Our approach aims to be very modular (ie Abstract) and very readable.
